@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
+import { api } from "@/types/constants";
 
 export default function Test() {
-  const api =
-    process.env.NODE_ENV === "development"
-      ? process.env.NEXT_PUBLIC_SERVER_DEV_URL
-      : process.env.NEXT_PUBLIC_SERVER_PROD_URL;
-
   const [x, setX] = useState("");
 
   useEffect(() => {
+    console.log(api);
     const get = async () => {
       const response = await fetch(`${api}/test`);
+      console.log(response);
       const data = await response.text();
+      // console.log(data);
       setX(data);
     };
     get();
