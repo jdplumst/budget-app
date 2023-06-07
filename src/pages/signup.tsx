@@ -56,7 +56,7 @@ export default function Signup() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.png" />
       </Head>
-      <main className="flex flex-col justify-evenly items-center min-h-screen">
+      <main className="flex min-h-screen flex-col items-center justify-evenly">
         <form
           onSubmit={handleSignup}
           className="border-color flex h-1/3 w-1/2 flex-col border-2 p-10">
