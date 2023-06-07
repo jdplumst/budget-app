@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "@/types/constants";
+import { api } from "@/constants";
 
 export default function Test() {
   const [x, setX] = useState("");
@@ -10,7 +10,6 @@ export default function Test() {
       const response = await fetch(`${api}/test`);
       console.log(response);
       const data = await response.text();
-      // console.log(data);
       setX(data);
     };
     get();

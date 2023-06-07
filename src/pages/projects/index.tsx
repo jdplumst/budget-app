@@ -1,4 +1,4 @@
-import { api } from "@/types/constants";
+import { api } from "@/constants";
 import { useQuery } from "react-query";
 
 interface Project {

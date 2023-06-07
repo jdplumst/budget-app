@@ -1,3 +1,35 @@
+import Head from "next/head";
+import Link from "next/link";
+
 export default function Home() {
-  return <main>Main</main>;
+  return (
+    <>
+      <Head>
+        <title>Budget App</title>
+        <meta name="description" content="Budget App" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.png" />
+      </Head>
+      <main className="flex flex-col justify-evenly items-center min-h-screen">
+        <h1 className="text-8xl">Budget App</h1>
+        <div className="flex justify-center gap-10">
+          <Link href="/login">
+            <button className="rounded-lg bg-purple-500 p-4 text-4xl font-bold text-white hover:cursor-pointer hover:bg-purple-600 w-60 h-20">
+              Log In
+            </button>
+          </Link>
+          <Link href="/signup">
+            <button className="rounded-lg bg-green-500 p-4 text-4xl font-bold text-white hover:cursor-pointer hover:bg-green-600 w-60 h-20">
+              Sign Up
+            </button>
+          </Link>
+          <button
+            // onClick={() => handleGuestLogin()}
+            className="rounded-lg bg-slate-500 p-4 text-4xl font-bold text-white hover:cursor-pointer hover:bg-slate-600 w-60 h-20">
+            Guest Login
+          </button>
+        </div>
+      </main>
+    </>
+  );
 }
