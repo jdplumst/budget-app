@@ -17,17 +17,12 @@ export default function Signup() {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
-        // "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
-        // "Access-Control-Allow-Origin": "*"
       },
       body: JSON.stringify({ username, password })
     });
     if (!response.ok) {
-      // throw Error("Network response was not ok");
-      // const error = await response.text();
-      // console.log(response);
-      // console.log(error);
-      throw Error("Must fill all fields");
+      const error = await response.text();
+      throw Error(error);
     }
     return response.json();
   };
