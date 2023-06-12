@@ -8,7 +8,6 @@ export default function Test() {
     console.log(api);
     const get = async () => {
       const response = await fetch(`${api}/test`);
-      console.log(response);
       const data = await response.text();
       setX(data);
     };
