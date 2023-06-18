@@ -24,7 +24,7 @@ export default function Login() {
       const error = await response.text();
       throw Error(error);
     }
-    return response.json();
+    return;
   };
 
   const { mutate: loginMutation, isLoading } = useMutation(login, {

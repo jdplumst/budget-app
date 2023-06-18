@@ -25,7 +25,7 @@ export default function Signup() {
       const error = await response.text();
       throw Error(error);
     }
-    return response.json();
+    return;
   };
 
   const { mutate: signupMutation, isLoading } = useMutation(signup, {
