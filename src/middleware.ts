@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+export const config = {
+  matcher: ["/((?!_next/static|favicon.ico).*)"]
+};
+
 export function middleware(request: NextRequest) {
   const cookie = request.cookies.get("ba_session");
 
@@ -22,9 +26,11 @@ export function middleware(request: NextRequest) {
 
   if (
     !cookie &&
-    request.nextUrl.pathname !== "/" &&
-    request.nextUrl.pathname !== "/login" &&
-    request.nextUrl.pathname !== "/signup"
+    !(
+      request.nextUrl.pathname === "/" ||
+      request.nextUrl.pathname === "/login" ||
+      request.nextUrl.pathname === "/signup"
+    )
   ) {
     return NextResponse.redirect(
       new URL(
@@ -35,5 +41,4 @@ export function middleware(request: NextRequest) {
       )
     );
   }
-  return NextResponse.next();
 }
