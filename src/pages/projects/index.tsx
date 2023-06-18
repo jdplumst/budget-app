@@ -12,7 +12,7 @@ export default function Projects() {
     isError,
     data: projects
   } = useQuery<Project[]>("projects", async () => {
-    const response = await fetch(`${api}/project`);
+    const response = await fetch(`${api}/project`, { credentials: "include" });
     if (!response.ok) {
       throw Error("Network response was not ok");
     }
