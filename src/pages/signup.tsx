@@ -1,7 +1,6 @@
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { api } from "@/constants";
 import Head from "next/head";
-import Link from "next/link";
 import Router from "next/router";
 import React, { useState } from "react";
 import { useMutation } from "react-query";
