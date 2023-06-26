@@ -1,3 +1,4 @@
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { api } from "@/constants";
 import { useQuery } from "react-query";
 
@@ -19,17 +20,20 @@ export default function Projects() {
     return response.json();
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <LoadingSpinner />;
   if (isError) return <div>Error!</div>;
 
   return (
     <div>
-      {projects &&
-        projects.map((p) => (
+      {projects?.length! > 0 ? (
+        projects!.map((p) => (
           <div key={2}>
             {p.id} {p.name}
           </div>
-        ))}
+        ))
+      ) : (
+        <span>You currently have no projects!</span>
+      )}
     </div>
   );
 }

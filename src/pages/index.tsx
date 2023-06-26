@@ -1,3 +1,4 @@
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { api } from "@/constants";
 import Head from "next/head";
 import Link from "next/link";
@@ -68,7 +69,7 @@ export default function Home() {
             onClick={() => handleGuestLogin()}
             disabled={disabled}
             className="h-20 w-60 rounded-lg bg-slate-500 p-4 text-4xl font-bold text-white hover:cursor-pointer hover:bg-slate-600">
-            Guest Login
+            {isLoading ? <LoadingSpinner /> : "Guest Login"}
           </button>
         </div>
         {error && (
