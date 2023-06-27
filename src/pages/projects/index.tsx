@@ -1,8 +1,6 @@
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { api } from "@/constants";
-import { InferGetServerSidePropsType } from "next";
 import Router from "next/router";
-import { useEffect } from "react";
 import { useQuery } from "react-query";
 
 interface User {
@@ -40,34 +38,27 @@ export default function Projects() {
   if (isLoading) return <LoadingSpinner />;
   if (isError) return <div>Error!</div>;
 
-  // useEffect(() => {
-  //   const test = async () => {
-  //     const response = await fetch(`${api}/project`, {
-  //       credentials: "include"
-  //     });
-  //     if (!response.ok) {
-  //       throw Error("Network response was not ok");
-  //     }
-  //     const user = await response.json();
-  //     console.log("useeffect: " + user);
-  //     return user;
-  //   };
-
-  //   test();
-  // }, []);
-
   return (
     <div>
       <div>Hi {user?.username}</div>
-      {projects?.length! > 0 ? (
-        projects!.map((p) => (
-          <div key={2}>
-            {p.id} {p.name}
+      <div className="projects grid justify-center gap-5 pt-5">
+        <div className="relative flex h-72 w-72 justify-center border-2 border-solid border-black text-center text-4xl font-bold">
+          <div className="absolute top-10">Add A New Project</div>
+          <button className="absolute bottom-10 w-40 rounded-lg border-2 border-black bg-blue-500 p-2 font-bold hover:bg-blue-600">
+            Add
+          </button>
+        </div>
+        {projects!.map((p) => (
+          <div
+            key={2}
+            className="relative flex h-72 w-72 justify-center border-2 border-solid border-black text-center text-4xl font-bold">
+            <div className="absolute top-10">{p.name}</div>
+            <button className="absolute bottom-10 w-40 rounded-lg border-2 border-black bg-green-500 p-2 font-bold hover:bg-green-600">
+              Select
+            </button>
           </div>
-        ))
-      ) : (
-        <span>You currently have no projects!</span>
-      )}
+        ))}
+      </div>
     </div>
   );
 }

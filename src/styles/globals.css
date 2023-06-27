@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Projects Grid */
+.projects {
+  grid-template-columns: repeat(auto-fill, 288px);
+}
