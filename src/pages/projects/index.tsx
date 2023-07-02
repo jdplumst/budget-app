@@ -1,4 +1,5 @@
 import LoadingSpinner from "@/components/LoadingSpinner";
+import Navbar from "@/components/Navbar";
 import { api } from "@/constants";
 import useSession from "@/hooks/useSession";
 import Router from "next/router";
@@ -38,7 +39,8 @@ export default function Projects() {
 
   return (
     <div>
-      <div>Hi {user?.username}</div>
+      {/* <div>Hi {user?.username}</div> */}
+      <Navbar username={user?.username!} />
       <div className="projects grid justify-center gap-5 pt-5">
         <div className="relative flex h-72 w-72 justify-center border-2 border-solid border-black text-center text-4xl font-bold">
           <div className="absolute top-10">Add A New Project</div>
