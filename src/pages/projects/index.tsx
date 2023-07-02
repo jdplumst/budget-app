@@ -1,41 +1,33 @@
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { api } from "@/constants";
+import useSession from "@/hooks/useSession";
 import Router from "next/router";
 import { useQuery } from "react-query";
 
-interface User {
-  username: string;
-}
-
-interface Project {
-  id: number;
-  name: string;
-}
-
 export default function Projects() {
-  const { data: user } = useQuery<User>("user", async () => {
-    const response = await fetch(`${api}/user`, { credentials: "include" });
-    if (!response.ok) {
-      Router.push("/");
-    }
-    const user = await response.json();
-    return user;
-  });
+  const { user, userLoading } = useSession();
+  if (!user && !userLoading) {
+    Router.push("/");
+  }
 
   const {
-    isLoading,
+    isLoading: projectsLoading,
     isError,
     data: projects
   } = useQuery<Project[]>("projects", async () => {
     const response = await fetch(`${api}/project`, { credentials: "include" });
-    console.log("project run!");
     if (!response.ok) {
-      throw Error("Network response was not ok");
+      throw Error("Not authorized to fetch projects");
     }
     return response.json();
   });
 
-  if (isLoading) return <LoadingSpinner />;
+  if (userLoading || projectsLoading)
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
   if (isError) return <div>Error!</div>;
 
   return (

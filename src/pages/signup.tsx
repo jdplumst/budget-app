@@ -1,5 +1,6 @@
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { api } from "@/constants";
+import useSession from "@/hooks/useSession";
 import Head from "next/head";
 import Router from "next/router";
 import React, { useState } from "react";
@@ -10,6 +11,11 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [disabled, setDisabled] = useState(false);
+
+  const { user, userLoading } = useSession();
+  if (user && !userLoading) {
+    Router.push("/projects");
+  }
 
   const signup = async () => {
     const response = await fetch(`${api}/auth/signup`, {
@@ -42,6 +48,13 @@ export default function Signup() {
     setDisabled(true);
     signupMutation();
   };
+
+  if (userLoading || user)
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
 
   return (
     <>
