@@ -14,13 +14,19 @@ export default function Projects() {
     isLoading: projectsLoading,
     isError,
     data: projects
-  } = useQuery<Project[]>("projects", async () => {
-    const response = await fetch(`${api}/project`, { credentials: "include" });
-    if (!response.ok) {
-      throw Error("Not authorized to fetch projects");
-    }
-    return response.json();
-  });
+  } = useQuery<Project[]>(
+    "projects",
+    async () => {
+      const response = await fetch(`${api}/project`, {
+        credentials: "include"
+      });
+      if (!response.ok) {
+        throw Error("Not authorized to fetch projects");
+      }
+      return response.json();
+    },
+    { enabled: !!user }
+  );
 
   if (userLoading || projectsLoading)
     return (
@@ -40,7 +46,7 @@ export default function Projects() {
             Add
           </button>
         </div>
-        {projects!.map((p) => (
+        {projects?.map((p) => (
           <div
             key={2}
             className="relative flex h-72 w-72 justify-center border-2 border-solid border-black text-center text-4xl font-bold">
