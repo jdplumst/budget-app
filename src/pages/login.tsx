@@ -1,10 +1,9 @@
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { api } from "@/constants";
+import useLogin from "@/hooks/useLogin";
 import useSession from "@/hooks/useSession";
 import Head from "next/head";
 import Router from "next/router";
 import React, { useState } from "react";
-import { useMutation } from "react-query";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -17,36 +16,27 @@ export default function Login() {
     Router.push("/projects");
   }
 
-  const login = async () => {
-    const response = await fetch(`${api}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ username, password }),
-      credentials: "include"
-    });
-    if (!response.ok) {
-      const error = await response.text();
-      throw Error(error);
-    }
-    return;
-  };
-
-  const { mutate: loginMutation, isLoading } = useMutation(login, {
-    onSuccess(data, variables, context) {
-      Router.push("/projects");
-    },
-    onError(error, variables, context) {
-      setError((error as Error).message);
-      setDisabled(false);
-    }
-  });
+  const {
+    mutate: loginMutation,
+    isLoading: loginLoading,
+    error: loginError
+  } = useLogin();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setDisabled(true);
-    loginMutation();
+    loginMutation(
+      { username, password },
+      {
+        onSuccess(data, variables, context) {
+          Router.push("/projects");
+        },
+        onError(error, variables, context) {
+          setError((error as Error).message);
+          setDisabled(false);
+        }
+      }
+    );
   };
 
   if (userLoading || user)
@@ -86,11 +76,11 @@ export default function Login() {
           <button
             disabled={disabled}
             className="mx-auto w-1/4 rounded-lg bg-purple-500 p-4 text-xl font-bold text-white hover:cursor-pointer hover:bg-purple-600">
-            {isLoading ? <LoadingSpinner /> : "Login"}
+            {loginLoading ? <LoadingSpinner /> : "Login"}
           </button>
-          {error && (
-            <div className="mx-auto mt-5 w-3/5 border-2 border-solid border-pink-400 bg-pink-300 p-2 text-center">
-              {error}
+          {(loginError as Error) && (
+            <div className="mx-auto mt-5 w-3/5 border-2 border-solid border-pink-400 bg-pink-300 p-2 text-center font-bold">
+              {(loginError as Error).message}
             </div>
           )}
         </form>

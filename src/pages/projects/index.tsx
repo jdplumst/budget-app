@@ -1,9 +1,7 @@
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Navbar from "@/components/Navbar";
-import { api } from "@/constants";
 import useSession from "@/hooks/useSession";
 import Router from "next/router";
-import { useMutation, useQuery } from "react-query";
 import { GrUpdate } from "react-icons/gr";
 import { AiFillDelete } from "react-icons/ai";
 import { MdOutlineCancel } from "react-icons/md";
