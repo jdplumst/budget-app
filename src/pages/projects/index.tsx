@@ -10,6 +10,8 @@ import { MdOutlineCancel } from "react-icons/md";
 import { useState } from "react";
 import Head from "next/head";
 import Modal from "@/components/Modal";
+import useGetProjects from "@/hooks/useGetProjects";
+import useUpdateProject from "@/hooks/useUpdateProject";
 
 interface IUpdate {
   disabledIcon: boolean;
@@ -20,6 +22,7 @@ interface IUpdate {
 }
 
 export default function Projects() {
+  // State variables associated with updating projects
   const [update, setUpdate] = useState<IUpdate>({
     disabledIcon: false,
     disabledButton: false,
@@ -29,73 +32,50 @@ export default function Projects() {
   });
   const [updateName, setUpdateName] = useState("");
 
+  // Get user
   const { user, userLoading } = useSession();
   if (!user && !userLoading) {
     Router.push("/");
   }
 
+  // Get projects
   const {
-    isLoading: projectsLoading,
-    isError,
     data: projects,
+    isLoading: projectsLoading,
+    isError: projectsError,
     refetch: refetchProjects
-  } = useQuery<Project[]>(
-    "projects",
-    async () => {
-      const response = await fetch(`${api}/project`, {
-        credentials: "include"
-      });
-      if (!response.ok) {
-        throw Error("Not authorized to fetch projects");
-      }
-      return response.json();
-    },
-    { enabled: !!user }
-  );
+  } = useGetProjects(user);
 
-  const updateProject = async (name: string) => {
-    const response = await fetch(`${api}/project`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ id: update.project?.id, name: name }),
-      credentials: "include"
-    });
-    if (!response.ok) {
-      const error = await response.text();
-      throw Error(error);
-    }
-    return;
-  };
+  // Mutation to update project
+  const { mutate: updateMutation, isLoading: updateLoading } =
+    useUpdateProject();
 
-  const { mutate: updateMutation, isLoading: updateLoading } = useMutation(
-    updateProject,
-    {
-      onSuccess(data, variables, context) {
-        setUpdate({
-          disabledIcon: false,
-          disabledButton: false,
-          modal: false,
-          project: null,
-          error: null
-        });
-        setUpdateName("");
-        refetchProjects();
-      },
-      onError(error, variables, context) {
-        setUpdate({
-          ...update,
-          disabledButton: false,
-          error: (error as Error).message
-        });
-      }
-    }
-  );
-
+  // Update project
   const handleUpdate = () => {
     setUpdate({ ...update, disabledButton: true });
-    updateMutation(updateName);
+    updateMutation(
+      { id: update.project?.id!, name: updateName },
+      {
+        onSuccess(data, variables, context) {
+          setUpdate({
+            disabledIcon: false,
+            disabledButton: false,
+            modal: false,
+            project: null,
+            error: null
+          });
+          setUpdateName("");
+          refetchProjects();
+        },
+        onError(error, variables, context) {
+          setUpdate({
+            ...update,
+            disabledButton: false,
+            error: (error as Error).message
+          });
+        }
+      }
+    );
   };
 
   if (userLoading || projectsLoading)
@@ -104,7 +84,8 @@ export default function Projects() {
         <LoadingSpinner />
       </div>
     );
-  if (isError) return <div>Error!</div>;
+
+  if (projectsError) return <div>Error!</div>;
 
   return (
     <>
