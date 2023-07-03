@@ -1,15 +1,13 @@
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { api } from "@/constants";
 import useSession from "@/hooks/useSession";
+import useSignup from "@/hooks/useSignup";
 import Head from "next/head";
 import Router from "next/router";
 import React, { useState } from "react";
-import { useMutation } from "react-query";
 
 export default function Signup() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [disabled, setDisabled] = useState(false);
 
   const { user, userLoading } = useSession();
@@ -17,36 +15,26 @@ export default function Signup() {
     Router.push("/projects");
   }
 
-  const signup = async () => {
-    const response = await fetch(`${api}/auth/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ username, password }),
-      credentials: "include"
-    });
-    if (!response.ok) {
-      const error = await response.text();
-      throw Error(error);
-    }
-    return;
-  };
-
-  const { mutate: signupMutation, isLoading } = useMutation(signup, {
-    onSuccess(data, variables, context) {
-      Router.push("/projects");
-    },
-    onError(error, variables, context) {
-      setError((error as Error).message);
-      setDisabled(false);
-    }
-  });
+  const {
+    mutate: signupMutation,
+    isLoading: signupLoading,
+    error: signupError
+  } = useSignup();
 
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
     setDisabled(true);
-    signupMutation();
+    signupMutation(
+      { username, password },
+      {
+        onSuccess(data, variables, context) {
+          Router.push("/projects");
+        },
+        onError(error, variables, context) {
+          setDisabled(false);
+        }
+      }
+    );
   };
 
   if (userLoading || user)
@@ -86,11 +74,11 @@ export default function Signup() {
           <button
             disabled={disabled}
             className="mx-auto w-1/4 rounded-lg bg-green-500 p-4 text-xl font-bold text-white hover:cursor-pointer hover:bg-green-600">
-            {isLoading ? <LoadingSpinner /> : "Sign Up"}
+            {signupLoading ? <LoadingSpinner /> : "Sign Up"}
           </button>
-          {error && (
-            <div className="mx-auto mt-5 w-3/5 border-2 border-solid border-pink-400 bg-pink-300 p-2 text-center">
-              {error}
+          {(signupError as Error) && (
+            <div className="mx-auto mt-5 w-3/5 border-2 border-solid border-pink-400 bg-pink-300 p-2 text-center font-bold">
+              {(signupError as Error).message}
             </div>
           )}
         </form>

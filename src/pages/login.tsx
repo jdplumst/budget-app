@@ -8,7 +8,6 @@ import React, { useState } from "react";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [disabled, setDisabled] = useState(false);
 
   const { user, userLoading } = useSession();
@@ -32,7 +31,6 @@ export default function Login() {
           Router.push("/projects");
         },
         onError(error, variables, context) {
-          setError((error as Error).message);
           setDisabled(false);
         }
       }
