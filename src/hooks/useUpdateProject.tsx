@@ -9,7 +9,7 @@ interface IUpdateMutation {
 export default function useUpdateProject() {
   const { mutate, isLoading } = useMutation(
     async ({ id, name }: IUpdateMutation) => {
-      const response = await fetch(`${api}/project`, {
+      const response = await fetch(`${api}/project/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"
