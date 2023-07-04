@@ -10,6 +10,7 @@ import Head from "next/head";
 import Modal from "@/components/Modal";
 import useGetProjects from "@/hooks/useGetProjects";
 import useUpdateProject from "@/hooks/useUpdateProject";
+import useDeleteProject from "@/hooks/useDeleteProject";
 
 interface IUpdate {
   disabledIcon: boolean;
@@ -30,6 +31,15 @@ export default function Projects() {
   });
   const [updateName, setUpdateName] = useState("");
 
+  // State variable associated with deleting projects
+  const [del, setDel] = useState<IUpdate>({
+    disabledIcon: false,
+    disabledButton: false,
+    modal: false,
+    project: null,
+    error: null
+  });
+
   // Get user
   const { user, userLoading } = useSession();
   if (!user && !userLoading) {
@@ -47,6 +57,10 @@ export default function Projects() {
   // Mutation to update project
   const { mutate: updateMutation, isLoading: updateLoading } =
     useUpdateProject();
+
+  // Mutation to delete project
+  const { mutate: deleteMutation, isLoading: deleteLoading } =
+    useDeleteProject();
 
   // Update project
   const handleUpdate = () => {
@@ -74,6 +88,30 @@ export default function Projects() {
         }
       }
     );
+  };
+
+  // Delete project
+  const handleDelete = () => {
+    setDel({ ...del, disabledButton: true });
+    deleteMutation(del.project!, {
+      onSuccess(data, variables, context) {
+        setDel({
+          disabledIcon: false,
+          disabledButton: false,
+          modal: false,
+          project: null,
+          error: null
+        });
+        refetchProjects();
+      },
+      onError(error, variables, context) {
+        setDel({
+          ...update,
+          disabledButton: false,
+          error: (error as Error).message
+        });
+      }
+    });
   };
 
   if (userLoading || projectsLoading)
@@ -132,6 +170,39 @@ export default function Projects() {
           </Modal>
         )}
 
+        {/* Delete Modal */}
+        {del.modal && (
+          <Modal>
+            <div className="text-center text-3xl font-bold">
+              Delete Project: {del.project?.name}
+            </div>
+            <div className="pb-5 pt-1 text-center text-xl font-bold">
+              Are you sure you want to delete this project?
+            </div>
+            <div className="flex gap-5">
+              <button
+                onClick={() => handleDelete()}
+                disabled={del.disabledButton}
+                className="mt-5 w-40 rounded-lg border-2 border-black bg-red-500 p-2 font-bold hover:bg-red-600">
+                {deleteLoading ? <LoadingSpinner /> : "Yes"}
+              </button>
+              <button
+                onClick={() =>
+                  setDel({
+                    ...del,
+                    disabledIcon: false,
+                    modal: false,
+                    project: null
+                  })
+                }
+                disabled={del.disabledButton}
+                className="mt-5 w-40 rounded-lg border-2 border-black bg-green-500 p-2 font-bold hover:bg-green-600">
+                No
+              </button>
+            </div>
+          </Modal>
+        )}
+
         <Navbar username={user?.username!} />
         <div className="projects grid justify-center gap-5 pt-5">
           <div className="relative flex h-72 w-72 justify-center border-2 border-solid border-black text-center text-4xl font-bold">
@@ -157,7 +228,16 @@ export default function Projects() {
                 className="absolute bottom-2 left-5">
                 <GrUpdate size={20} />
               </button>
-              <button className="absolute bottom-2 right-5">
+              <button
+                onClick={() =>
+                  setDel({
+                    ...del,
+                    disabledIcon: true,
+                    modal: true,
+                    project: p
+                  })
+                }
+                className="absolute bottom-2 right-5">
                 <AiFillDelete size={20} />
               </button>
               <div className="absolute top-10">{p.name}</div>
