@@ -229,7 +229,7 @@ export default function Projects() {
             <div className="text-center text-3xl font-bold">
               Delete Project: {del.project?.name}
             </div>
-            <div className="pb-5 pt-1 text-center text-xl font-bold">
+            <div className="pt-1 text-center text-xl">
               Are you sure you want to delete this project?
             </div>
             <div className="flex gap-5">

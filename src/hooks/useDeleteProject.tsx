@@ -8,7 +8,6 @@ export default function useDeleteProject() {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ id: p.id, name: p.name }),
       credentials: "include"
     });
     if (!response.ok) {
