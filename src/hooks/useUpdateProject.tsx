@@ -8,7 +8,7 @@ export default function useUpdateProject() {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ id: p.id, name: p.name }),
+      body: JSON.stringify({ id: p.id, name: p.name, budget: p.budget }),
       credentials: "include"
     });
     if (!response.ok) {

@@ -18,21 +18,30 @@ interface IUpdate {
   modal: boolean;
   project: Project | null;
   error: string | null;
+  name: string;
+  budget: string;
+}
+
+interface IDelete {
+  disabledIcon: boolean;
+  disabledButton: boolean;
+  modal: boolean;
+  project: Project | null;
+  error: string | null;
 }
 
 export default function Projects() {
-  // State variables associated with updating projects
   const [update, setUpdate] = useState<IUpdate>({
     disabledIcon: false,
     disabledButton: false,
     modal: false,
     project: null,
-    error: null
+    error: null,
+    name: "",
+    budget: "0.00"
   });
-  const [updateName, setUpdateName] = useState("");
 
-  // State variable associated with deleting projects
-  const [del, setDel] = useState<IUpdate>({
+  const [del, setDel] = useState<IDelete>({
     disabledIcon: false,
     disabledButton: false,
     modal: false,
@@ -63,10 +72,15 @@ export default function Projects() {
     useDeleteProject();
 
   // Update project
-  const handleUpdate = () => {
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
     setUpdate({ ...update, disabledButton: true });
     updateMutation(
-      { id: update.project?.id!, name: updateName },
+      {
+        id: update.project?.id!,
+        name: update.name,
+        budget: Number(update.budget)
+      },
       {
         onSuccess(data, variables, context) {
           setUpdate({
@@ -74,9 +88,10 @@ export default function Projects() {
             disabledButton: false,
             modal: false,
             project: null,
-            error: null
+            error: null,
+            name: "",
+            budget: "0.00"
           });
-          setUpdateName("");
           refetchProjects();
         },
         onError(error, variables, context) {
@@ -141,32 +156,70 @@ export default function Projects() {
                   ...update,
                   disabledIcon: false,
                   modal: false,
-                  project: null
+                  project: null,
+                  error: null,
+                  name: "",
+                  budget: ""
                 })
               }
               className="ml-auto flex">
               <MdOutlineCancel size={20} />
             </button>
-            <div className="text-center text-3xl font-bold">
-              Update Project: {update.project?.name}
-            </div>
-            <div className="pb-5 pt-1 text-center text-xl font-bold">
-              Please enter a new project name.
-            </div>
-            <input
-              className="w-full p-2 text-black"
-              value={updateName}
-              onChange={(e) => setUpdateName(e.target.value)}
-            />
-            <button
-              onClick={() => handleUpdate()}
-              disabled={update.disabledButton}
-              className="mt-5 w-40 rounded-lg border-2 border-black bg-blue-500 p-2 font-bold hover:bg-blue-600">
-              {updateLoading ? <LoadingSpinner /> : "Update Project"}
-            </button>
-            {update.error && (
-              <p className="font-bold text-red-500">{update.error}</p>
-            )}
+            <form onSubmit={handleUpdate}>
+              <div className="pb-5 text-center text-3xl font-bold">
+                Update Project: {update.project?.name}
+              </div>
+              <div className="pb-4">
+                <label
+                  htmlFor="name"
+                  className="pb-5 pt-1 text-center text-xl font-bold">
+                  Name:
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  className="w-full p-2 text-black"
+                  value={update.name}
+                  placeholder="Project Name"
+                  onChange={(e) =>
+                    setUpdate({ ...update, name: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="budget"
+                  className="pb-5 pt-1 text-center text-xl font-bold">
+                  Budget:
+                </label>
+                <input
+                  id="budget"
+                  name="budget"
+                  pattern="^\d+\.{0,1}\d{0,2}$"
+                  className="w-full p-2 text-black"
+                  value={update.budget}
+                  placeholder="0.00"
+                  onChange={(e) =>
+                    setUpdate({
+                      ...update,
+                      budget: e.target.value
+                    })
+                  }
+                />
+              </div>
+              <div className="flex justify-center">
+                <button
+                  disabled={update.disabledButton}
+                  className="mt-5 w-40 rounded-lg border-2 border-black bg-blue-500 p-2 font-bold hover:bg-blue-600">
+                  {updateLoading ? <LoadingSpinner /> : "Update Project"}
+                </button>
+              </div>
+              {update.error && (
+                <p className="pt-2 text-center font-bold text-red-500">
+                  {update.error}
+                </p>
+              )}
+            </form>
           </Modal>
         )}
 
@@ -221,7 +274,9 @@ export default function Projects() {
                     ...update,
                     disabledIcon: true,
                     modal: true,
-                    project: p
+                    project: p,
+                    name: p.name,
+                    budget: p.budget.toString()
                   })
                 }
                 disabled={update.disabledIcon}
