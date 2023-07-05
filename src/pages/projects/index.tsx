@@ -19,6 +19,7 @@ interface IUpdate {
   project: Project | null;
   error: string | null;
   name: string;
+  nameLength: number;
   budget: string;
 }
 
@@ -38,6 +39,7 @@ export default function Projects() {
     project: null,
     error: null,
     name: "",
+    nameLength: 0,
     budget: "0.00"
   });
 
@@ -90,6 +92,7 @@ export default function Projects() {
             project: null,
             error: null,
             name: "",
+            nameLength: 0,
             budget: "0.00"
           });
           refetchProjects();
@@ -159,6 +162,7 @@ export default function Projects() {
                   project: null,
                   error: null,
                   name: "",
+                  nameLength: 0,
                   budget: ""
                 })
               }
@@ -182,9 +186,14 @@ export default function Projects() {
                   value={update.name}
                   placeholder="Project Name"
                   onChange={(e) =>
-                    setUpdate({ ...update, name: e.target.value })
+                    setUpdate({
+                      ...update,
+                      name: e.target.value,
+                      nameLength: e.target.value.length
+                    })
                   }
                 />
+                <div>{update.nameLength}/30</div>
               </div>
               <div>
                 <label
@@ -257,7 +266,7 @@ export default function Projects() {
         )}
 
         <Navbar username={user?.username!} />
-        <div className="projects grid justify-center gap-5 pt-5">
+        <main className="projects grid justify-center gap-5 pt-5">
           <div className="relative flex h-72 w-72 justify-center border-2 border-solid border-black text-center text-4xl font-bold">
             <div className="absolute top-10">Add A New Project</div>
             <button className="absolute bottom-10 w-40 rounded-lg border-2 border-black bg-blue-500 p-2 font-bold hover:bg-blue-600">
@@ -276,6 +285,7 @@ export default function Projects() {
                     modal: true,
                     project: p,
                     name: p.name,
+                    nameLength: p.name.length,
                     budget: p.budget.toString()
                   })
                 }
@@ -301,7 +311,7 @@ export default function Projects() {
               </button>
             </div>
           ))}
-        </div>
+        </main>
       </div>
     </>
   );
