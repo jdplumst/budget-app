@@ -9,5 +9,7 @@ declare global {
     id?: number;
     name: string;
     budget: number;
+    createDate?: string;
+    modifyDate?: Date;
   }
 }
