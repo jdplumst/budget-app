@@ -10,6 +10,6 @@ declare global {
     name: string;
     budget: number;
     createDate?: string;
-    modifyDate?: Date;
+    modifyDate?: string;
   }
 }
