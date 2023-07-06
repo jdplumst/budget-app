@@ -420,7 +420,7 @@ export default function Projects() {
           {projects?.map((p) => (
             <div
               key={p.id}
-              className="relative flex h-72 w-72 justify-center border-2 border-solid border-black text-center text-4xl font-bold">
+              className="relative flex h-72 w-72 flex-col items-center justify-evenly border-2 border-solid border-black text-center text-4xl font-bold">
               <button
                 onClick={() =>
                   setUpdate({
@@ -449,8 +449,9 @@ export default function Projects() {
                 className="absolute bottom-2 right-5">
                 <AiFillDelete size={20} />
               </button>
-              <div className="absolute top-10">{p.name}</div>
-              <button className="absolute bottom-12 w-40 rounded-lg border-2 border-black bg-green-500 p-2 font-bold hover:bg-green-600">
+              <div>{p.name}</div>
+              <div>${p.budget.toFixed(2)}</div>
+              <button className="w-40 rounded-lg border-2 border-black bg-green-500 p-2 font-bold hover:bg-green-600">
                 Select
               </button>
             </div>
