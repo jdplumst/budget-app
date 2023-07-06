@@ -5,12 +5,23 @@ import Router from "next/router";
 import { GrUpdate } from "react-icons/gr";
 import { AiFillDelete } from "react-icons/ai";
 import { MdOutlineCancel } from "react-icons/md";
-import { useState } from "react";
+import React, { useState } from "react";
 import Head from "next/head";
 import Modal from "@/components/Modal";
 import useGetProjects from "@/hooks/useGetProjects";
 import useUpdateProject from "@/hooks/useUpdateProject";
 import useDeleteProject from "@/hooks/useDeleteProject";
+import useCreateProject from "@/hooks/useCreateProject";
+
+interface ICreate {
+  disabledIcon: boolean;
+  disabledButton: boolean;
+  modal: boolean;
+  error: string | null;
+  name: string;
+  nameLength: number;
+  budget: string;
+}
 
 interface IUpdate {
   disabledIcon: boolean;
@@ -32,6 +43,16 @@ interface IDelete {
 }
 
 export default function Projects() {
+  const [create, setCreate] = useState<ICreate>({
+    disabledIcon: false,
+    disabledButton: false,
+    modal: false,
+    error: null,
+    name: "",
+    nameLength: 0,
+    budget: "0.00"
+  });
+
   const [update, setUpdate] = useState<IUpdate>({
     disabledIcon: false,
     disabledButton: false,
@@ -65,6 +86,10 @@ export default function Projects() {
     refetch: refetchProjects
   } = useGetProjects(user);
 
+  // Mutation to create project
+  const { mutate: createMutation, isLoading: createLoading } =
+    useCreateProject();
+
   // Mutation to update project
   const { mutate: updateMutation, isLoading: updateLoading } =
     useUpdateProject();
@@ -72,6 +97,39 @@ export default function Projects() {
   // Mutation to delete project
   const { mutate: deleteMutation, isLoading: deleteLoading } =
     useDeleteProject();
+
+  // Create project
+  const handleCreate = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCreate({ ...create, disabledButton: true });
+    createMutation(
+      {
+        name: create.name,
+        budget: Number(create.budget)
+      },
+      {
+        onSuccess(data, variables, context) {
+          setCreate({
+            disabledIcon: false,
+            disabledButton: false,
+            modal: false,
+            error: null,
+            name: "",
+            nameLength: 0,
+            budget: "0.00"
+          });
+          refetchProjects();
+        },
+        onError(error, variables, context) {
+          setCreate({
+            ...create,
+            disabledButton: false,
+            error: (error as Error).message
+          });
+        }
+      }
+    );
+  };
 
   // Update project
   const handleUpdate = (e: React.FormEvent) => {
@@ -150,6 +208,87 @@ export default function Projects() {
         <link rel="icon" href="/favicon.png" />
       </Head>
       <div>
+        {/* Create Modal */}
+        {create.modal && (
+          <Modal>
+            <button
+              onClick={() =>
+                setCreate({
+                  ...create,
+                  disabledIcon: false,
+                  modal: false,
+                  error: null,
+                  name: "",
+                  nameLength: 0,
+                  budget: ""
+                })
+              }
+              className="ml-auto flex">
+              <MdOutlineCancel size={20} />
+            </button>
+            <form onSubmit={handleCreate}>
+              <div className="pb-5 text-center text-3xl font-bold">
+                Create Project
+              </div>
+              <div className="pb-4">
+                <label
+                  htmlFor="name"
+                  className="pb-5 pt-1 text-center text-xl font-bold">
+                  Name:
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  className="w-full p-2 text-black"
+                  value={create.name}
+                  placeholder="Project Name"
+                  onChange={(e) =>
+                    setCreate({
+                      ...create,
+                      name: e.target.value,
+                      nameLength: e.target.value.length
+                    })
+                  }
+                />
+                <div>{create.nameLength}/30</div>
+              </div>
+              <div>
+                <label
+                  htmlFor="budget"
+                  className="pb-5 pt-1 text-center text-xl font-bold">
+                  Budget:
+                </label>
+                <input
+                  id="budget"
+                  name="budget"
+                  pattern="^\d+\.{0,1}\d{0,2}$"
+                  className="w-full p-2 text-black"
+                  value={create.budget}
+                  placeholder="0.00"
+                  onChange={(e) =>
+                    setCreate({
+                      ...create,
+                      budget: e.target.value
+                    })
+                  }
+                />
+              </div>
+              <div className="flex justify-center">
+                <button
+                  disabled={create.disabledButton}
+                  className="mt-5 w-40 rounded-lg border-2 border-black bg-blue-500 p-2 font-bold hover:bg-blue-600">
+                  {createLoading ? <LoadingSpinner /> : "Create Project"}
+                </button>
+              </div>
+              {create.error && (
+                <p className="pt-2 text-center font-bold text-red-500">
+                  {create.error}
+                </p>
+              )}
+            </form>
+          </Modal>
+        )}
+
         {/* Update Modal */}
         {update.modal && (
           <Modal>
@@ -269,7 +408,12 @@ export default function Projects() {
         <main className="projects grid justify-center gap-5 pt-5">
           <div className="relative flex h-72 w-72 justify-center border-2 border-solid border-black text-center text-4xl font-bold">
             <div className="absolute top-10">Add A New Project</div>
-            <button className="absolute bottom-10 w-40 rounded-lg border-2 border-black bg-blue-500 p-2 font-bold hover:bg-blue-600">
+            <button
+              onClick={() =>
+                setCreate({ ...create, disabledIcon: true, modal: true })
+              }
+              disabled={create.disabledIcon}
+              className="absolute bottom-10 w-40 rounded-lg border-2 border-black bg-blue-500 p-2 font-bold hover:bg-blue-600">
               Add
             </button>
           </div>

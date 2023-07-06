@@ -6,7 +6,7 @@ declare global {
   }
 
   interface Project {
-    id: number;
+    id?: number;
     name: string;
     budget: number;
   }
