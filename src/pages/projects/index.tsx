@@ -406,14 +406,15 @@ export default function Projects() {
 
         <Navbar username={user?.username!} />
         <main className="projects grid justify-center gap-5 pt-5">
-          <div className="relative flex h-72 w-72 justify-center border-2 border-solid border-black text-center text-4xl font-bold">
-            <div className="absolute top-10">Add A New Project</div>
+          <div className="relative flex h-72 w-72 flex-col items-center justify-evenly border-2 border-solid border-black text-center text-4xl font-bold">
+            <div>Add A New Project</div>
+            <div></div>
             <button
               onClick={() =>
                 setCreate({ ...create, disabledIcon: true, modal: true })
               }
               disabled={create.disabledIcon}
-              className="absolute bottom-10 w-40 rounded-lg border-2 border-black bg-blue-500 p-2 font-bold hover:bg-blue-600">
+              className="w-40 rounded-lg border-2 border-black bg-blue-500 p-2 text-3xl font-bold hover:bg-blue-600">
               Add
             </button>
           </div>
@@ -449,9 +450,11 @@ export default function Projects() {
                 className="absolute bottom-2 right-5">
                 <AiFillDelete size={20} />
               </button>
-              <div>{p.name}</div>
-              <div>${p.budget.toFixed(2)}</div>
-              <button className="w-40 rounded-lg border-2 border-black bg-green-500 p-2 font-bold hover:bg-green-600">
+              <div className="h-10 w-64 truncate text-3xl">{p.name}</div>
+              <div className="w-64 truncate text-3xl">
+                ${p.budget.toFixed(2)}
+              </div>
+              <button className="w-40 rounded-lg border-2 border-black bg-green-500 p-2 text-3xl font-bold hover:bg-green-600">
                 Select
               </button>
             </div>
