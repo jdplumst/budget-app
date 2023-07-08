@@ -81,7 +81,7 @@ export default function Home() {
           <button
             onClick={() => handleGuestLogin()}
             disabled={disabled}
-            className="h-20 w-60 rounded-lg bg-slate-500 p-4 text-4xl font-bold text-white hover:cursor-pointer hover:bg-slate-600">
+            className="h-20 w-60 rounded-lg bg-blue-500 p-4 text-4xl font-bold text-white hover:cursor-pointer hover:bg-blue-600">
             {isLoading ? <LoadingSpinner /> : "Guest Login"}
           </button>
         </div>
