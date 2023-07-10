@@ -16,6 +16,7 @@ declare global {
 
   enum Role {
     User = 0,
-    Premium = 1
+    Premium = 1 << 0,
+    Admin = 1 << 2
   }
 }
