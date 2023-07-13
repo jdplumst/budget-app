@@ -14,9 +14,11 @@ declare global {
     modifyDate?: string;
   }
 
-  enum Role {
-    User = 0,
-    Premium = 1 << 0,
-    Admin = 1 << 2
+  interface Expense {
+    id: number;
+    name: string;
+    type: ExpenseType;
+    amount: number;
+    projectId: number;
   }
 }

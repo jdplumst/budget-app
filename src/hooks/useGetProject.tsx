@@ -6,7 +6,7 @@ export default function useGetProject(
   id: string | string[] | undefined
 ) {
   const { isLoading, error, data, refetch } = useQuery<Project>(
-    "projects",
+    "project",
     async () => {
       const response = await fetch(`${api}/project/${id}`, {
         credentials: "include"
