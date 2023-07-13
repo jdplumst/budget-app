@@ -6,3 +6,12 @@
 .projects {
   grid-template-columns: repeat(auto-fill, 288px);
 }
+
+/* Reverse Meter Colours */
+meter::-webkit-meter-even-less-good-value {
+  background: green;
+}
+
+meter::-webkit-meter-optimum-value {
+  background: red;
+}

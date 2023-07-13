@@ -192,7 +192,7 @@ export default function Projects() {
 
   if (userLoading || projectsLoading)
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex h-screen w-screen items-center justify-center">
         <LoadingSpinner />
       </div>
     );
@@ -454,7 +454,9 @@ export default function Projects() {
               <div className="w-64 truncate text-3xl">
                 ${p.budget.toFixed(2)}
               </div>
-              <button className="w-40 rounded-lg border-2 border-black bg-green-500 p-2 text-3xl font-bold hover:bg-green-600">
+              <button
+                onClick={() => Router.push(`/projects/${p.id}`)}
+                className="w-40 rounded-lg border-2 border-black bg-green-500 p-2 text-3xl font-bold hover:bg-green-600">
                 Select
               </button>
             </div>
