@@ -12,7 +12,7 @@ export default function useUpdateProject() {
       credentials: "include"
     });
     if (!response.ok) {
-      const error = await response.text();
+      const error = await response.json();
       throw Error(error);
     }
     return;
