@@ -9,7 +9,7 @@ import useSession from "@/hooks/useSession";
 import { ExpenseType } from "@/types/enums";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdOutlineCancel } from "react-icons/md";
 
 interface ICreate {
@@ -35,7 +35,8 @@ export default function Project() {
   const router = useRouter();
   const id = router.query.id;
 
-  const [expenseTotal, setExpenseTotal] = useState(177);
+  const [expenseTotal, setExpenseTotal] = useState(0);
+
   const [create, setCreate] = useState<ICreate>({
     disabledIcon: false,
     disabledButton: false,
@@ -143,6 +144,17 @@ export default function Project() {
       }
     });
   };
+
+  useEffect(() => {
+    const calculateExpenseTotal = () => {
+      let sum = 0;
+      for (let i = 0; i < expenses!.length; i++) {
+        sum += expenses![i].amount;
+      }
+      return sum;
+    };
+    if (expenses) setExpenseTotal(calculateExpenseTotal);
+  }, [expenses]);
 
   if (userLoading || projectLoading || expenseLoading)
     return (
