@@ -2,6 +2,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import Modal from "@/components/Modal";
 import Navbar from "@/components/Navbar";
 import useCreateExpense from "@/hooks/useCreateExpense";
+import useDeleteExpense from "@/hooks/useDeleteExpense";
 import useGetExpenses from "@/hooks/useGetExpenses";
 import useGetProject from "@/hooks/useGetProject";
 import useSession from "@/hooks/useSession";
@@ -22,6 +23,14 @@ interface ICreate {
   type: ExpenseType;
 }
 
+interface IDelete {
+  disabledIcon: boolean;
+  disabledButton: boolean;
+  modal: boolean;
+  expense: Expense | null;
+  error: string | null;
+}
+
 export default function Project() {
   const router = useRouter();
   const id = router.query.id;
@@ -36,6 +45,14 @@ export default function Project() {
     nameLength: 0,
     amount: "0",
     type: ExpenseType.Housing
+  });
+
+  const [del, setDel] = useState<IDelete>({
+    disabledIcon: false,
+    disabledButton: false,
+    modal: false,
+    expense: null,
+    error: null
   });
 
   // Get user
@@ -63,7 +80,11 @@ export default function Project() {
   const { mutate: createMutation, isLoading: createLoading } =
     useCreateExpense();
 
-  // Create project
+  // Mutation to delete project
+  const { mutate: deleteMutation, isLoading: deleteLoading } =
+    useDeleteExpense();
+
+  // Create expense
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
     setCreate({ ...create, disabledButton: true });
@@ -97,6 +118,30 @@ export default function Project() {
         }
       }
     );
+  };
+
+  // Delete expense
+  const handleDelete = () => {
+    setDel({ ...del, disabledButton: true });
+    deleteMutation(del.expense!, {
+      onSuccess(data, variables, context) {
+        setDel({
+          disabledIcon: false,
+          disabledButton: false,
+          modal: false,
+          expense: null,
+          error: null
+        });
+        refetchExpenses();
+      },
+      onError(error, variables, context) {
+        setDel({
+          ...del,
+          disabledButton: false,
+          error: (error as Error).message
+        });
+      }
+    });
   };
 
   if (userLoading || projectLoading || expenseLoading)
@@ -231,6 +276,40 @@ export default function Project() {
             </form>
           </Modal>
         )}
+
+        {/* Delete Modal */}
+        {del.modal && (
+          <Modal>
+            <div className="text-center text-3xl font-bold">
+              Delete Expense: {del.expense?.name}
+            </div>
+            <div className="pt-1 text-center text-xl">
+              Are you sure you want to delete this expense?
+            </div>
+            <div className="flex gap-5">
+              <button
+                onClick={() => handleDelete()}
+                disabled={del.disabledButton}
+                className="mt-5 w-40 rounded-lg border-2 border-black bg-red-500 p-2 font-bold hover:bg-red-600">
+                {deleteLoading ? <LoadingSpinner /> : "Yes"}
+              </button>
+              <button
+                onClick={() =>
+                  setDel({
+                    ...del,
+                    disabledIcon: false,
+                    modal: false,
+                    expense: null
+                  })
+                }
+                disabled={del.disabledButton}
+                className="mt-5 w-40 rounded-lg border-2 border-black bg-green-500 p-2 font-bold hover:bg-green-600">
+                No
+              </button>
+            </div>
+          </Modal>
+        )}
+
         <Navbar username={user?.username!} />
         <main className="p-5">
           <h1 className="text-5xl font-bold">{project?.name}</h1>
@@ -281,7 +360,18 @@ export default function Project() {
                   <button className="w-40 rounded-lg border-2 border-black bg-green-500 p-2 text-xl font-bold hover:bg-green-600">
                     Update
                   </button>
-                  <button className="w-40 rounded-lg border-2 border-black bg-red-500 p-2 text-xl font-bold hover:bg-red-600">
+                  <button
+                    disabled={del.disabledIcon}
+                    onClick={() => {
+                      setDel({
+                        ...del,
+                        disabledIcon: true,
+                        modal: true,
+                        expense: e
+                      });
+                      window.scrollTo(0, 0);
+                    }}
+                    className="w-40 rounded-lg border-2 border-black bg-red-500 p-2 text-xl font-bold hover:bg-red-600">
                     Delete
                   </button>
                 </div>

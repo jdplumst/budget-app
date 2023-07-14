@@ -182,7 +182,7 @@ export default function Projects() {
       },
       onError(error, variables, context) {
         setDel({
-          ...update,
+          ...del,
           disabledButton: false,
           error: (error as Error).message
         });
@@ -439,6 +439,7 @@ export default function Projects() {
                 <GrUpdate size={20} />
               </button>
               <button
+                disabled={del.disabledIcon}
                 onClick={() =>
                   setDel({
                     ...del,
