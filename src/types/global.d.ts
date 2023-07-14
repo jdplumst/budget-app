@@ -15,7 +15,7 @@ declare global {
   }
 
   interface Expense {
-    id: number;
+    id?: number;
     name: string;
     type: ExpenseType;
     amount: number;
