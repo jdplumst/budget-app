@@ -235,7 +235,7 @@ export default function Project() {
                 <label
                   htmlFor="amount"
                   className="pb-5 pt-1 text-center text-xl font-bold">
-                  Budget:
+                  Amount:
                 </label>
                 <input
                   id="amount"
