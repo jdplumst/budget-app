@@ -12,7 +12,7 @@ export default function useCreateExpense() {
       credentials: "include"
     });
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.text();
       throw Error(error);
     }
     return;
