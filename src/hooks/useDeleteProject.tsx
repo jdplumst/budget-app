@@ -6,6 +6,7 @@ export default function useDeleteProject() {
     const response = await fetch(`${api}/project/${p.id}`, {
       method: "DELETE",
       headers: {
+        "Accept": "application/json",
         "Content-Type": "application/json"
       },
       credentials: "include"

@@ -6,6 +6,7 @@ export default function useCreateProject() {
     const response = await fetch(`${api}/project`, {
       method: "POST",
       headers: {
+        "Accept": "application/json",
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ name: p.name, budget: p.budget }),

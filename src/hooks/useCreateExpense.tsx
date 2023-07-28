@@ -6,13 +6,14 @@ export default function useCreateExpense() {
     const response = await fetch(`${api}/expense`, {
       method: "POST",
       headers: {
+        "Accept": "application/json",
         "Content-Type": "application/json"
       },
       body: JSON.stringify(e),
       credentials: "include"
     });
     if (!response.ok) {
-      const error = await response.text();
+      const error = await response.json();
       throw Error(error);
     }
     return;

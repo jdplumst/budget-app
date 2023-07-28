@@ -6,6 +6,7 @@ export default function useUpdateProject() {
     const response = await fetch(`${api}/project/${p.id}`, {
       method: "PUT",
       headers: {
+        "Accept": "application/json",
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ id: p.id, name: p.name, budget: p.budget }),

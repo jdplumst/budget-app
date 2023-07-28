@@ -6,10 +6,14 @@ export default function useGetProjects(user: User | undefined) {
     "projects",
     async () => {
       const response = await fetch(`${api}/project`, {
+        headers: {
+          Accept: "application/json"
+        },
         credentials: "include"
       });
       if (!response.ok) {
-        throw Error("Not authorized to fetch projects");
+        const error = await response.json();
+        throw Error(error);
       }
       return response.json();
     },

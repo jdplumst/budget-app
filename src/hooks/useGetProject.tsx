@@ -9,10 +9,14 @@ export default function useGetProject(
     "project",
     async () => {
       const response = await fetch(`${api}/project/${id}`, {
+        headers: {
+          Accept: "application/json"
+        },
         credentials: "include"
       });
       if (!response.ok) {
-        throw Error("Not authorized to fetch this project");
+        const error = await response.json();
+        throw Error(error);
       }
       return response.json();
     },

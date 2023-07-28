@@ -6,6 +6,7 @@ export default function useDeleteExpense() {
     const response = await fetch(`${api}/expense/${e.id}`, {
       method: "DELETE",
       headers: {
+        "Accept": "application/json",
         "Content-Type": "application/json"
       },
       credentials: "include"

@@ -6,6 +6,9 @@ export default function useGetExpenses(project: Project | undefined) {
     "expenses",
     async () => {
       const response = await fetch(`${api}/expense?projectId=${project?.id}`, {
+        headers: {
+          Accept: "application/json"
+        },
         credentials: "include"
       });
       if (!response.ok) {
