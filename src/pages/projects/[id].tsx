@@ -6,6 +6,7 @@ import useDeleteExpense from "@/hooks/useDeleteExpense";
 import useGetExpenses from "@/hooks/useGetExpenses";
 import useGetProject from "@/hooks/useGetProject";
 import useSession from "@/hooks/useSession";
+import useUpdateExpense from "@/hooks/useUpdateExpense";
 import { ExpenseType } from "@/types/enums";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -16,6 +17,18 @@ interface ICreate {
   disabledIcon: boolean;
   disabledButton: boolean;
   modal: boolean;
+  error: string | null;
+  name: string;
+  nameLength: number;
+  amount: string;
+  type: ExpenseType;
+}
+
+interface IUpdate {
+  disabledIcon: boolean;
+  disabledButton: boolean;
+  modal: boolean;
+  expense: Expense | null;
   error: string | null;
   name: string;
   nameLength: number;
@@ -41,6 +54,18 @@ export default function Project() {
     disabledIcon: false,
     disabledButton: false,
     modal: false,
+    error: null,
+    name: "",
+    nameLength: 0,
+    amount: "0",
+    type: ExpenseType.Housing
+  });
+
+  const [update, setUpdate] = useState<IUpdate>({
+    disabledIcon: false,
+    disabledButton: false,
+    modal: false,
+    expense: null,
     error: null,
     name: "",
     nameLength: 0,
@@ -81,6 +106,10 @@ export default function Project() {
   const { mutate: createMutation, isLoading: createLoading } =
     useCreateExpense();
 
+  // Mutations to update expense
+  const { mutate: updateMutation, isLoading: updateLoading } =
+    useUpdateExpense();
+
   // Mutation to delete project
   const { mutate: deleteMutation, isLoading: deleteLoading } =
     useDeleteExpense();
@@ -113,6 +142,44 @@ export default function Project() {
         onError(error, variables, context) {
           setCreate({
             ...create,
+            disabledButton: false,
+            error: (error as Error).message
+          });
+        }
+      }
+    );
+  };
+
+  // Update expense
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    setUpdate({ ...update, disabledButton: true });
+    updateMutation(
+      {
+        id: update.expense?.id,
+        name: update.name,
+        amount: Number(update.amount),
+        type: update.type,
+        projectId: Number(id)
+      },
+      {
+        onSuccess(data, variables, context) {
+          setUpdate({
+            disabledIcon: false,
+            disabledButton: false,
+            modal: false,
+            expense: null,
+            error: null,
+            name: "",
+            nameLength: 0,
+            amount: "0.00",
+            type: ExpenseType.Housing
+          });
+          refetchExpenses();
+        },
+        onError(error, variables, context) {
+          setUpdate({
+            ...update,
             disabledButton: false,
             error: (error as Error).message
           });
@@ -212,7 +279,7 @@ export default function Project() {
               <div className="pb-4">
                 <label
                   htmlFor="name"
-                  className="pb-5 pt-1 text-center text-xl font-bold">
+                  className="pt-1 text-center text-xl font-bold">
                   Name:
                 </label>
                 <input
@@ -234,7 +301,7 @@ export default function Project() {
               <div>
                 <label
                   htmlFor="amount"
-                  className="pb-5 pt-1 text-center text-xl font-bold">
+                  className="pt-1 text-center text-xl font-bold">
                   Amount:
                 </label>
                 <input
@@ -252,7 +319,7 @@ export default function Project() {
                   }
                 />
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col gap-1">
                 <label htmlFor="type" className="pt-5 text-xl font-bold">
                   Type:
                 </label>
@@ -262,7 +329,7 @@ export default function Project() {
                   onChange={(e) =>
                     setCreate({ ...create, type: Number(e.target.value) })
                   }
-                  className="text-black"
+                  className="p-2 text-black"
                   value={create.type}>
                   {Object.keys(ExpenseType)
                     .filter((key) => !isNaN(Number(key)))
@@ -283,6 +350,110 @@ export default function Project() {
               {create.error && (
                 <p className="pt-2 text-center font-bold text-red-500">
                   {create.error}
+                </p>
+              )}
+            </form>
+          </Modal>
+        )}
+
+        {/* Update Modal */}
+        {update.modal && (
+          <Modal>
+            <button
+              onClick={() =>
+                setUpdate({
+                  ...update,
+                  disabledIcon: false,
+                  modal: false,
+                  expense: null,
+                  error: null,
+                  name: "",
+                  nameLength: 0,
+                  amount: "",
+                  type: ExpenseType.Housing
+                })
+              }
+              className="ml-auto flex">
+              <MdOutlineCancel size={20} />
+            </button>
+            <form onSubmit={handleUpdate}>
+              <div className="pb-5 text-center text-3xl font-bold">
+                Update Expense: {update.expense?.name}
+              </div>
+              <div className="pb-4">
+                <label
+                  htmlFor="name"
+                  className="pt-1 text-center text-xl font-bold">
+                  Name:
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  className="w-full p-2 text-black"
+                  value={update.name}
+                  placeholder="Expense Name"
+                  onChange={(e) =>
+                    setUpdate({
+                      ...update,
+                      name: e.target.value,
+                      nameLength: e.target.value.length
+                    })
+                  }
+                />
+                <div>{update.nameLength}/30</div>
+              </div>
+              <div>
+                <label
+                  htmlFor="amount"
+                  className="pt-1 text-center text-xl font-bold">
+                  Amount:
+                </label>
+                <input
+                  id="amount"
+                  name="amount"
+                  pattern="^\d+\.{0,1}\d{0,2}$"
+                  className="w-full p-2 text-black"
+                  value={update.amount}
+                  placeholder="0.00"
+                  onChange={(e) =>
+                    setUpdate({
+                      ...update,
+                      amount: e.target.value
+                    })
+                  }
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label htmlFor="type" className="pt-5 text-xl font-bold">
+                  Type:
+                </label>
+                <select
+                  name="type"
+                  id="type"
+                  onChange={(e) =>
+                    setUpdate({ ...update, type: Number(e.target.value) })
+                  }
+                  className="p-2 text-black"
+                  value={update.type}>
+                  {Object.keys(ExpenseType)
+                    .filter((key) => !isNaN(Number(key)))
+                    .map((key) => (
+                      <option key={key} value={key} className="text-black">
+                        {ExpenseType[Number(key)]}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              <div className="flex justify-center">
+                <button
+                  disabled={update.disabledButton}
+                  className="mt-5 w-40 rounded-lg border-2 border-black bg-blue-500 p-2 font-bold hover:bg-blue-600">
+                  {updateLoading ? <LoadingSpinner /> : "Update Project"}
+                </button>
+              </div>
+              {update.error && (
+                <p className="pt-2 text-center font-bold text-red-500">
+                  {update.error}
                 </p>
               )}
             </form>
@@ -369,7 +540,22 @@ export default function Project() {
                   </p>
                 </div>
                 <div className="flex flex-col gap-5">
-                  <button className="w-40 rounded-lg border-2 border-black bg-green-500 p-2 text-xl font-bold hover:bg-green-600">
+                  <button
+                    disabled={update.disabledIcon}
+                    onClick={() => {
+                      setUpdate({
+                        ...update,
+                        disabledIcon: true,
+                        modal: true,
+                        expense: e,
+                        name: e.name,
+                        nameLength: e.name.length,
+                        amount: e.amount.toString(),
+                        type: e.type
+                      });
+                      window.scrollTo(0, 0);
+                    }}
+                    className="w-40 rounded-lg border-2 border-black bg-green-500 p-2 text-xl font-bold hover:bg-green-600">
                     Update
                   </button>
                   <button
