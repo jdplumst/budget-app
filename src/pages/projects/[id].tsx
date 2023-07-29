@@ -610,7 +610,8 @@ export default function Project() {
                 ]
               }}
               options={{
-                aspectRatio: 3
+                aspectRatio: 3,
+                color: "black"
               }}></Doughnut>
           </div>
         </main>
