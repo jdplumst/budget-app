@@ -7,12 +7,13 @@ import useGetExpenses from "@/hooks/useGetExpenses";
 import useGetProject from "@/hooks/useGetProject";
 import useSession from "@/hooks/useSession";
 import useUpdateExpense from "@/hooks/useUpdateExpense";
-import { ExpenseType } from "@/types/enums";
+import { ExpenseType, Role } from "@/types/enums";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { MdOutlineCancel } from "react-icons/md";
-
+import { Chart, ArcElement, Legend, Tooltip } from "chart.js";
+import { Doughnut } from "react-chartjs-2";
 interface ICreate {
   disabledIcon: boolean;
   disabledButton: boolean;
@@ -212,6 +213,12 @@ export default function Project() {
     });
   };
 
+  Chart.register(ArcElement, Legend, Tooltip);
+
+  const randomNum = () => Math.floor(Math.random() * 255);
+  const randomRGB = () => `rgb(${randomNum()}, ${randomNum()}, ${randomNum()})`;
+  const [chartColours, setChartColours] = useState<string[]>([]);
+
   useEffect(() => {
     const calculateExpenseTotal = () => {
       let sum = 0;
@@ -220,7 +227,11 @@ export default function Project() {
       }
       return sum;
     };
-    if (expenses) setExpenseTotal(calculateExpenseTotal);
+
+    if (expenses) {
+      setExpenseTotal(calculateExpenseTotal);
+      setChartColours([...expenses.map((e) => randomRGB()), randomRGB()]);
+    }
   }, [expenses]);
 
   if (userLoading || projectLoading || expenseLoading)
@@ -344,7 +355,7 @@ export default function Project() {
                 <button
                   disabled={create.disabledButton}
                   className="mt-5 w-40 rounded-lg border-2 border-black bg-blue-500 p-2 font-bold hover:bg-blue-600">
-                  {createLoading ? <LoadingSpinner /> : "Create Project"}
+                  {createLoading ? <LoadingSpinner /> : "Create Expense"}
                 </button>
               </div>
               {create.error && (
@@ -448,7 +459,7 @@ export default function Project() {
                 <button
                   disabled={update.disabledButton}
                   className="mt-5 w-40 rounded-lg border-2 border-black bg-blue-500 p-2 font-bold hover:bg-blue-600">
-                  {updateLoading ? <LoadingSpinner /> : "Update Project"}
+                  {updateLoading ? <LoadingSpinner /> : "Update Expense"}
                 </button>
               </div>
               {update.error && (
@@ -498,8 +509,8 @@ export default function Project() {
           <h1 className="text-5xl font-bold">{project?.name}</h1>
           <div className="flex flex-col items-center justify-center py-10 text-xl font-bold">
             <div>
-              You have spent ${expenseTotal} out of your ${project?.budget}{" "}
-              budget
+              You have spent ${expenseTotal.toFixed(2)} out of your $
+              {project?.budget} budget
             </div>
             <meter
               className="h-6 w-4/5"
@@ -576,6 +587,32 @@ export default function Project() {
               </li>
             ))}
           </ul>
+          <div className="flex items-center justify-center pt-10">
+            {(user?.role & Role.Premium) !== Role.Premium && (
+              <div className="absolute z-10 text-3xl font-bold">
+                Must be a Premium member to view
+              </div>
+            )}
+            <Doughnut
+              className={`${
+                (user?.role & Role.Premium) !== Role.Premium && `opacity-10`
+              }`}
+              data={{
+                labels: [...expenses?.map((e) => e.name)!, "Remaining Budget"],
+                datasets: [
+                  {
+                    data: [
+                      ...expenses?.map((e) => e.amount.toFixed(2))!,
+                      project?.budget! - expenseTotal!
+                    ],
+                    backgroundColor: chartColours
+                  }
+                ]
+              }}
+              options={{
+                aspectRatio: 3
+              }}></Doughnut>
+          </div>
         </main>
       </div>
     </>
