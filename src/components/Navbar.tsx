@@ -43,12 +43,24 @@ export default function Navbar({ username }: INavbar) {
   return (
     <nav className="navbar navbar-expand-lg navbar-light relative flex w-full flex-wrap items-center justify-between bg-gray-100 px-14 py-4 shadow-lg">
       <span className="text-3xl font-bold">Hi {username}!</span>
-      <button
-        onClick={() => handleLogout()}
-        disabled={disabled}
-        className="rounded-lg border-2 border-black bg-red-500 p-2 font-bold hover:bg-red-600">
-        {isLoading ? <LoadingSpinner /> : "Logout"}
-      </button>
+      <div className="flex gap-5">
+        <a
+          href="/projects"
+          className="rounded-lg border-2 border-black bg-slate-300 p-2 font-bold hover:bg-slate-400">
+          Projects
+        </a>
+        <a
+          href="/premium"
+          className="rounded-lg border-2 border-black bg-orange-500 p-2 font-bold hover:bg-orange-600">
+          Premium
+        </a>
+        <button
+          onClick={() => handleLogout()}
+          disabled={disabled}
+          className="rounded-lg border-2 border-black bg-red-500 p-2 font-bold hover:bg-red-600">
+          {isLoading ? <LoadingSpinner /> : "Logout"}
+        </button>
+      </div>
     </nav>
   );
 }
