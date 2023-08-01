@@ -1,54 +1,24 @@
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { api } from "@/constants";
+import useLogin from "@/hooks/useLogin";
 import useSession from "@/hooks/useSession";
 import Head from "next/head";
 import Link from "next/link";
 import Router from "next/router";
 import { useState } from "react";
-import { useMutation } from "react-query";
 
 export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [disabled, setDisabled] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState<null | "Guest" | "Premium">(
+    null
+  );
 
   const { user, userLoading } = useSession();
   if (user && !userLoading) {
     Router.push("/projects");
   }
 
-  const guestLogin = async () => {
-    const response = await fetch(`${api}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        username: process.env.NEXT_PUBLIC_GUEST_USERNAME,
-        password: process.env.NEXT_PUBLIC_GUEST_PWORD
-      }),
-      credentials: "include"
-    });
-    if (!response.ok) {
-      const error = await response.text();
-      throw Error(error);
-    }
-    return;
-  };
-
-  const { mutate: guestMutation, isLoading } = useMutation(guestLogin, {
-    onSuccess(data, variables, context) {
-      Router.push("/projects");
-    },
-    onError(error, variables, context) {
-      setError((error as Error).message);
-      setDisabled(false);
-    }
-  });
-
-  const handleGuestLogin = () => {
-    setDisabled(true);
-    guestMutation();
-  };
+  const { mutate: loginMutation, isLoading: loginLoading } = useLogin();
 
   if (userLoading || user)
     return (
@@ -67,22 +37,74 @@ export default function Home() {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-evenly">
         <h1 className="text-8xl">Budget App</h1>
-        <div className="flex justify-center gap-10">
+        <div className="grid grid-cols-2 gap-10">
           <Link href="/login">
-            <button className="h-20 w-60 rounded-lg bg-purple-500 p-4 text-4xl font-bold text-white hover:cursor-pointer hover:bg-purple-600">
+            <button
+              disabled={disabled}
+              className="h-28 w-60 rounded-lg bg-purple-500 p-4 text-4xl font-bold text-white hover:cursor-pointer hover:bg-purple-600">
               Log In
             </button>
           </Link>
           <Link href="/signup">
-            <button className="h-20 w-60 rounded-lg bg-green-500 p-4 text-4xl font-bold text-white hover:cursor-pointer hover:bg-green-600">
+            <button
+              disabled={disabled}
+              className="h-28 w-60 rounded-lg bg-green-500 p-4 text-4xl font-bold text-white hover:cursor-pointer hover:bg-green-600">
               Sign Up
             </button>
           </Link>
           <button
-            onClick={() => handleGuestLogin()}
+            onClick={() => {
+              setDisabled(true);
+              setIsLoggingIn("Guest");
+              loginMutation(
+                {
+                  username: process.env.NEXT_PUBLIC_GUEST_USERNAME as string,
+                  password: process.env.NEXT_PUBLIC_GUEST_PWORD as string
+                },
+                {
+                  onSuccess(data, variables, context) {
+                    Router.push("/projects");
+                  },
+                  onError(error, variables, context) {
+                    setDisabled(false);
+                  }
+                }
+              );
+            }}
             disabled={disabled}
-            className="h-20 w-60 rounded-lg bg-blue-500 p-4 text-4xl font-bold text-white hover:cursor-pointer hover:bg-blue-600">
-            {isLoading ? <LoadingSpinner /> : "Guest Login"}
+            className="h-28 w-60 rounded-lg bg-blue-500 p-4 text-4xl font-bold text-white hover:cursor-pointer hover:bg-blue-600">
+            {loginLoading && isLoggingIn === "Guest" ? (
+              <LoadingSpinner />
+            ) : (
+              "Guest Login"
+            )}
+          </button>
+          <button
+            onClick={() => {
+              setDisabled(true);
+              setIsLoggingIn("Premium");
+              loginMutation(
+                {
+                  username: process.env.NEXT_PUBLIC_PREMIUM_USERNAME as string,
+                  password: process.env.NEXT_PUBLIC_PREMIUM_PWORD as string
+                },
+                {
+                  onSuccess(data, variables, context) {
+                    Router.push("/projects");
+                  },
+                  onError(error, variables, context) {
+                    setDisabled(false);
+                  }
+                }
+              );
+            }}
+            disabled={disabled}
+            className="h-28 w-60 rounded-lg bg-orange-500 p-4 text-4xl font-bold text-white hover:cursor-pointer hover:bg-orange-600">
+            {loginLoading && isLoggingIn === "Premium" ? (
+              <LoadingSpinner />
+            ) : (
+              "Premium Login"
+            )}
           </button>
         </div>
         {error && (
