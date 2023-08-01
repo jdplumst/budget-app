@@ -58,7 +58,7 @@ export default function Project() {
     error: null,
     name: "",
     nameLength: 0,
-    amount: "0",
+    amount: "",
     type: ExpenseType.Housing
   });
 
@@ -70,7 +70,7 @@ export default function Project() {
     error: null,
     name: "",
     nameLength: 0,
-    amount: "0",
+    amount: "",
     type: ExpenseType.Housing
   });
 
