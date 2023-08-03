@@ -3,6 +3,7 @@ import Router from "next/router";
 import { useState } from "react";
 import { useMutation } from "react-query";
 import LoadingSpinner from "./LoadingSpinner";
+import Link from "next/link";
 
 interface INavbar {
   username: string;
@@ -44,16 +45,16 @@ export default function Navbar({ username }: INavbar) {
     <nav className="navbar navbar-expand-lg navbar-light relative flex w-full flex-wrap items-center justify-between bg-gray-100 px-14 py-4 shadow-lg">
       <span className="text-3xl font-bold">Hi {username}!</span>
       <div className="flex gap-5">
-        <a
+        <Link
           href="/projects"
           className="rounded-lg border-2 border-black bg-slate-300 p-2 font-bold hover:bg-slate-400">
           Projects
-        </a>
-        <a
+        </Link>
+        <Link
           href="/premium"
           className="rounded-lg border-2 border-black bg-orange-500 p-2 font-bold hover:bg-orange-600">
           Premium
-        </a>
+        </Link>
         <button
           onClick={() => handleLogout()}
           disabled={disabled}
