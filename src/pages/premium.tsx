@@ -1,8 +1,11 @@
+import LoadingSpinner from "@/components/LoadingSpinner";
+import Modal from "@/components/Modal";
 import Navbar from "@/components/Navbar";
+import useAddPremium from "@/hooks/useAddPremium";
 import useSession from "@/hooks/useSession";
 import Head from "next/head";
 import Router from "next/router";
-import { useState } from "react";
+import { ErrorInfo, useState } from "react";
 
 export default function Premium() {
   // Get user
@@ -11,7 +14,22 @@ export default function Premium() {
     Router.push("/");
   }
 
-  const [error, setError] = useState(true);
+  const [modal, setModal] = useState(false);
+  const [error, setError] = useState<null | string>(null);
+
+  const { mutate: premiumMutation, isLoading } = useAddPremium();
+
+  const handlePremium = () => {
+    premiumMutation(undefined, {
+      onSuccess(data, variables, context) {
+        setModal(true);
+        setError(null);
+      },
+      onError(error, variables, context) {
+        setError((error as Error).message);
+      }
+    });
+  };
 
   return (
     <>
@@ -38,13 +56,28 @@ export default function Premium() {
           </div>
           <div className="text-4xl font-semibold">$0</div>
           <button
-            onClick={() => setError((p) => !p)}
+            onClick={() => handlePremium()}
             className="w-full rounded-lg border-2 border-black bg-black p-2 text-xl text-white hover:bg-stone-900">
-            Subscribe
+            {isLoading ? <LoadingSpinner /> : "Subscribe"}
           </button>
-          {error && <div className="font-medium text-red-500">Error!</div>}
+          {error && <div className="font-medium text-red-500">{error}</div>}
         </div>
       </main>
+
+      {/* Subscribed to Premium Modal */}
+      {modal && (
+        <Modal>
+          <div className="pb-2 text-center text-3xl font-bold">
+            Congratulations!
+          </div>
+          <div className="pb-5 text-xl">You are now a Premium member!</div>
+          <button
+            onClick={() => setModal(false)}
+            className="w-40 rounded-lg border-2 border-black bg-green-500 p-2 text-xl hover:bg-green-600">
+            OK
+          </button>
+        </Modal>
+      )}
     </>
   );
 }
