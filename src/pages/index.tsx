@@ -33,7 +33,7 @@ export default function Home() {
         <title>Budget App</title>
         <meta name="description" content="Budget App" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-evenly">
         <h1 className="text-8xl">Budget App</h1>

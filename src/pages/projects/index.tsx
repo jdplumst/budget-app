@@ -205,7 +205,7 @@ export default function Projects() {
         <title>Budget App</title>
         <meta name="description" content="Budget App" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
       <div>
         {/* Create Modal */}

@@ -5,7 +5,7 @@ import useAddPremium from "@/hooks/useAddPremium";
 import useSession from "@/hooks/useSession";
 import Head from "next/head";
 import Router from "next/router";
-import { ErrorInfo, useState } from "react";
+import { useState } from "react";
 
 export default function Premium() {
   // Get user
@@ -37,7 +37,7 @@ export default function Premium() {
         <title>Budget App</title>
         <meta name="description" content="Budget App" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar username={user?.username!} />
       <main className="flex w-screen flex-col items-center gap-10 pt-10">
