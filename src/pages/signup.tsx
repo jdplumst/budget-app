@@ -59,6 +59,7 @@ export default function Signup() {
           <h3 className="pb-5 text-center text-3xl font-bold">Sign Up</h3>
           <label className="text-xl font-bold">Username:</label>
           <input
+            data-test="signup-username-input"
             type="text"
             onChange={(e) => setUsername(e.target.value)}
             value={username}
@@ -66,12 +67,14 @@ export default function Signup() {
           />
           <label className="text-xl font-bold">Password:</label>
           <input
+            data-test="signup-password-input"
             type="password"
             onChange={(e) => setPassword(e.target.value)}
             value={password}
             className="border-color mb-5 block w-full rounded-lg border-2 border-solid bg-inherit p-2 focus:border-slate-500 focus:outline-none"
           />
           <button
+            data-test="signup-button"
             disabled={disabled}
             className="mx-auto w-1/4 rounded-lg bg-green-500 p-4 text-xl font-bold text-white hover:cursor-pointer hover:bg-green-600">
             {signupLoading ? <LoadingSpinner /> : "Sign Up"}

@@ -35,3 +35,18 @@
 //     }
 //   }
 // }
+
+declare namespace Cypress {
+  interface Chainable<Subject = any> {
+    register(email: string, password: string): Chainable<void>;
+    getDataTest(selector: string): Chainable<void>;
+  }
+}
+
+Cypress.Commands.add("getDataTest", (selector) => {
+  cy.get(`[data-test="${selector}"]`);
+});
+
+Cypress.Commands.add("register", (email, password) => {
+  cy.visit("/signup");
+});

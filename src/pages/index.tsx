@@ -45,7 +45,7 @@ export default function Home() {
               Log In
             </button>
           </Link>
-          <Link href="/signup">
+          <Link data-test="signup-link" href="/signup">
             <button
               disabled={disabled}
               className="h-28 w-60 rounded-lg bg-green-500 p-4 text-4xl font-bold text-white hover:cursor-pointer hover:bg-green-600">
