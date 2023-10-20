@@ -31,4 +31,18 @@ describe("Register Tests", () => {
     cy.getDataTest("signup-button").click();
     cy.contains("Username already taken").should("be.visible");
   });
+
+  it("Password length less than 8", () => {
+    cy.getDataTest("signup-username-input").type("x");
+    cy.getDataTest("signup-password-input").type("$0Xxxxx");
+    cy.contains(
+      "Password must contain at least 1 lowercase character, " +
+        "1 uppercase character, 1 digit, 1 special character, and 8 characters total"
+    ).should("not.exist");
+    cy.getDataTest("signup-button").click();
+    cy.contains(
+      "Password must contain at least 1 lowercase character, " +
+        "1 uppercase character, 1 digit, 1 special character, and 8 characters total"
+    ).should("be.visible");
+  });
 });
