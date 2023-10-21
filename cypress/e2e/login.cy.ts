@@ -23,4 +23,12 @@ describe("Login Tests", () => {
     cy.getDataTest("login-button").click();
     cy.contains("Must enter a password").should("be.visible");
   });
+
+  it("User not found", () => {
+    cy.getDataTest("login-username-input").type("x");
+    cy.getDataTest("login-password-input").type("x");
+    cy.contains("User not found").should("not.exist");
+    cy.getDataTest("login-button").click();
+    cy.contains("User not found").should("be.visible");
+  });
 });
