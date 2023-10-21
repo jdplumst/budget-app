@@ -101,4 +101,17 @@ describe("Signup Tests", () => {
         "1 uppercase character, 1 digit, 1 special character, and 8 characters total"
     ).should("be.visible");
   });
+
+  it("Valid signup", () => {
+    const date = new Date();
+    const userDate =
+      date.getUTCFullYear().toString() +
+      (date.getUTCMonth() + 1).toString() +
+      date.getUTCDate().toString();
+    cy.getDataTest("signup-username-input").type(`test-${userDate}`);
+    cy.getDataTest("signup-password-input").type("$0Xxxxxx");
+    cy.getDataTest("signup-button").click();
+    cy.contains(`Hi test-${userDate}`).should("be.visible");
+    cy.url().should("include", "/projects");
+  });
 });
