@@ -38,7 +38,7 @@ export default function Home() {
       <main className="flex min-h-screen flex-col items-center justify-evenly">
         <h1 className="text-8xl">Budget App</h1>
         <div className="grid grid-cols-2 gap-10">
-          <Link href="/login">
+          <Link data-test="login-link" href="/login">
             <button
               disabled={disabled}
               className="h-28 w-60 rounded-lg bg-purple-500 p-4 text-4xl font-bold text-white hover:cursor-pointer hover:bg-purple-600">
