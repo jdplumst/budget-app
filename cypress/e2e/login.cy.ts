@@ -39,4 +39,13 @@ describe("Login Tests", () => {
     cy.getDataTest("login-button").click();
     cy.contains("Incorrect password").should("be.visible");
   });
+
+  it("Valid login", () => {
+    cy.getDataTest("login-username-input").type(Cypress.env("guest").username);
+    cy.getDataTest("login-password-input").type(Cypress.env("guest").password);
+    cy.url().should("not.include", "/projects");
+    cy.getDataTest("login-button").click();
+    cy.contains(`Hi ${Cypress.env("guest").username}!`).should("be.visible");
+    cy.url().should("include", "/projects");
+  });
 });
