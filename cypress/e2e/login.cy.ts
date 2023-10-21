@@ -31,4 +31,12 @@ describe("Login Tests", () => {
     cy.getDataTest("login-button").click();
     cy.contains("User not found").should("be.visible");
   });
+
+  it("Incorrect password", () => {
+    cy.getDataTest("login-username-input").type(Cypress.env("guest").username);
+    cy.getDataTest("login-password-input").type("x");
+    cy.contains("Incorrect password").should("not.exist");
+    cy.getDataTest("login-button").click();
+    cy.contains("Incorrect password").should("be.visible");
+  });
 });
