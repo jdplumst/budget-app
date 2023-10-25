@@ -46,16 +46,19 @@ export default function Navbar({ username }: INavbar) {
       <span className="text-3xl font-bold">Hi {username}!</span>
       <div className="flex gap-5">
         <Link
+          data-test="projects-link"
           href="/projects"
           className="rounded-lg border-2 border-black bg-slate-300 p-2 font-bold hover:bg-slate-400">
           Projects
         </Link>
         <Link
+          data-test="premium-link"
           href="/premium"
           className="rounded-lg border-2 border-black bg-orange-500 p-2 font-bold hover:bg-orange-600">
           Premium
         </Link>
         <button
+          data-test="logout-button"
           onClick={() => handleLogout()}
           disabled={disabled}
           className="rounded-lg border-2 border-black bg-red-500 p-2 font-bold hover:bg-red-600">

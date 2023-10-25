@@ -53,6 +53,7 @@ export default function Home() {
             </button>
           </Link>
           <button
+            data-test="guest-login"
             onClick={() => {
               setDisabled(true);
               setIsLoggingIn("Guest");
@@ -80,6 +81,7 @@ export default function Home() {
             )}
           </button>
           <button
+            data-test="premium-login"
             onClick={() => {
               setDisabled(true);
               setIsLoggingIn("Premium");

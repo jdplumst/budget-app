@@ -38,8 +38,11 @@
 
 declare namespace Cypress {
   interface Chainable<Subject = any> {
-    register(email: string, password: string): Chainable<void>;
     getDataTest(selector: string): Chainable<void>;
+    loginGuest(): Chainable<void>;
+    loginPremium(): Chainable<void>;
+    onProjectsPage(username: string): Chainable<void>;
+    onHomePage(): Chainable<void>;
   }
 }
 
@@ -47,6 +50,26 @@ Cypress.Commands.add("getDataTest", (selector) => {
   cy.get(`[data-test="${selector}"]`);
 });
 
-Cypress.Commands.add("register", (email, password) => {
-  cy.visit("/signup");
+Cypress.Commands.add("loginGuest", () => {
+  cy.visit("/");
+  cy.getDataTest("guest-login").click();
+});
+
+Cypress.Commands.add("loginPremium", () => {
+  cy.visit("/");
+  cy.getDataTest("premium-login.click").click();
+  cy.contains(`Hi ${Cypress.env("premium").username}!`).should("be.visible");
+  cy.url().should("include", "/projects");
+});
+
+Cypress.Commands.add("onProjectsPage", (username) => {
+  cy.url().should("eq", Cypress.config().baseUrl + "/projects");
+  cy.contains(`Hi ${username}!`).should("be.visible");
+  cy.contains("Add A New Project").should("be.visible");
+});
+
+Cypress.Commands.add("onHomePage", () => {
+  cy.url().should("eq", Cypress.config().baseUrl + "/");
+  cy.contains("Budget App").should("be.visible");
+  cy.contains("Log In").should("be.visible");
 });

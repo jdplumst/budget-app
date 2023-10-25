@@ -456,6 +456,7 @@ export default function Projects() {
                 ${p.budget.toFixed(2)}
               </div>
               <button
+                data-test={`project-${p.id}`}
                 onClick={() => Router.push(`/projects/${p.id}`)}
                 className="w-40 rounded-lg border-2 border-black bg-green-500 p-2 text-3xl font-bold hover:bg-green-600">
                 Select
