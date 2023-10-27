@@ -144,6 +144,17 @@ describe("Project Tests", () => {
     );
   });
 
+  it.only("Update Project - Budget Equal to 0", () => {
+    cy.loginGuest();
+    cy.getDataTest("update-project-icon-12").click();
+    cy.contains("Update Project: My First Project").should("be.visible");
+    cy.contains("16/30").should("be.visible");
+    cy.getDataTest("update-project-budget-input").clear().type("0");
+    cy.contains("Budget must be greater than $0").should("not.exist");
+    cy.getDataTest("update-project-button").click();
+    cy.contains("Budget must be greater than $0").should("be.visible");
+  });
+
   it("User Project Workflow", () => {
     // Create Project API Response
     cy.intercept({
