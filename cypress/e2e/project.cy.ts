@@ -84,6 +84,37 @@ describe("Project Tests", () => {
     cy.contains(`test-${formattedDate}`).should("not.exist");
   });
 
+  it("Update Project - Empty Name and Budget", () => {
+    cy.loginGuest();
+    cy.getDataTest("update-project-icon-12").click();
+    cy.contains("Update Project: My First Project").should("be.visible");
+    cy.getDataTest("update-project-name-input").clear();
+    cy.getDataTest("update-project-budget-input").clear();
+    cy.contains("Project Name must be non-empty").should("not.exist");
+    cy.getDataTest("update-project-button").click();
+    cy.contains("Project Name must be non-empty").should("be.visible");
+  });
+
+  it("Update Project - Empty Name", () => {
+    cy.loginGuest();
+    cy.getDataTest("update-project-icon-12").click();
+    cy.contains("Update Project: My First Project").should("be.visible");
+    cy.getDataTest("update-project-name-input").clear();
+    cy.contains("Project Name must be non-empty").should("not.exist");
+    cy.getDataTest("update-project-button").click();
+    cy.contains("Project Name must be non-empty").should("be.visible");
+  });
+
+  it("Update Project - Empty Budget", () => {
+    cy.loginGuest();
+    cy.getDataTest("update-project-icon-12").click();
+    cy.contains("Update Project: My First Project").should("be.visible");
+    cy.getDataTest("update-project-budget-input").clear();
+    cy.contains("Budget must be greater than $0").should("not.exist");
+    cy.getDataTest("update-project-button").click();
+    cy.contains("Budget must be greater than $0").should("be.visible");
+  });
+
   it("User Project Workflow", () => {
     // Create Project API Response
     cy.intercept({
