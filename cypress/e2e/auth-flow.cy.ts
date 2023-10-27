@@ -1,4 +1,21 @@
 describe("Auth Flow Tests", () => {
+  it("Logged out", () => {
+    cy.visit("/projects");
+    cy.onHomePage();
+    cy.visit("/projects/12");
+    cy.onHomePage();
+    cy.visit("/premium");
+    cy.onHomePage;
+    cy.visit("/");
+    cy.onHomePage();
+    cy.visit("/login");
+    cy.url().should("eq", Cypress.config().baseUrl + "/login");
+    cy.contains("Login").should("be.visible");
+    cy.visit("/signup");
+    cy.url().should("eq", Cypress.config().baseUrl + "/signup");
+    cy.contains("Sign Up").should("be.visible");
+  });
+
   it("Logged in then logged out", () => {
     const username = Cypress.env("guest").username;
 
