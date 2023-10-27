@@ -72,6 +72,18 @@ describe("Project Tests", () => {
     cy.contains("Create Project").should("be.visible");
   });
 
+  it("Create Project - Close Modal", () => {
+    cy.loginGuest();
+    cy.getDataTest("add-project-button").click();
+    cy.contains("Create Project").should("be.visible");
+    cy.getDataTest("create-project-name-input").type(`test-${formattedDate}`);
+    cy.getDataTest("create-project-budget-input").clear().type("137.19");
+    cy.getDataTest("create-project-close-button").click();
+    cy.contains(`test-${formattedDate}`).should("not.exist");
+    cy.reload();
+    cy.contains(`test-${formattedDate}`).should("not.exist");
+  });
+
   it("User Project Workflow", () => {
     // Create Project API Response
     cy.intercept({
