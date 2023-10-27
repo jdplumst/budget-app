@@ -24,7 +24,7 @@ describe("Project Tests", () => {
     cy.contains("Project Name must be non-empty").should("be.visible");
   });
 
-  it.only("Create Project - Empty Budget", () => {
+  it("Create Project - Empty Budget", () => {
     cy.loginGuest();
     cy.getDataTest("add-project-button").click();
     cy.contains("Create Project").should("be.visible");
@@ -124,6 +124,24 @@ describe("Project Tests", () => {
     cy.contains("Budget must be greater than $0").should("not.exist");
     cy.getDataTest("update-project-button").click();
     cy.contains("Budget must be greater than $0").should("be.visible");
+  });
+
+  it("Update Project - Name Longer than 30 Characters", () => {
+    cy.loginGuest();
+    cy.getDataTest("update-project-icon-12").click();
+    cy.contains("Update Project: My First Project").should("be.visible");
+    cy.contains("16/30").should("be.visible");
+    cy.getDataTest("update-project-name-input")
+      .clear()
+      .type("0123456789012345678901234567890");
+    cy.contains("31/30").should("be.visible");
+    cy.contains("Project Name must be 30 characters or less").should(
+      "not.exist"
+    );
+    cy.getDataTest("update-project-button").click();
+    cy.contains("Project Name must be 30 characters or less").should(
+      "be.visible"
+    );
   });
 
   it("User Project Workflow", () => {
