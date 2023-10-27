@@ -28,6 +28,12 @@ describe("Auth Flow Tests", () => {
     cy.url().should("eq", Cypress.config().baseUrl + "/projects/12");
     cy.contains(`Hi ${username}!`).should("be.visible");
     cy.contains("My First Project").should("be.visible");
+    cy.visit("/projects/14");
+    cy.wait(5000);
+    cy.url().should("eq", Cypress.config().baseUrl + "/projects/14");
+    cy.contains("You are not authorized to see this project").should(
+      "be.visible"
+    );
     cy.visit("/premium");
     cy.url().should("eq", Cypress.config().baseUrl + "/premium");
     cy.contains(`Hi ${username}!`).should("be.visible");
