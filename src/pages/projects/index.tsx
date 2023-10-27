@@ -237,6 +237,7 @@ export default function Projects() {
                   Name:
                 </label>
                 <input
+                  data-test="create-project-name-input"
                   id="name"
                   name="name"
                   className="w-full p-2 text-black"
@@ -259,6 +260,7 @@ export default function Projects() {
                   Budget:
                 </label>
                 <input
+                  data-test="create-project-budget-input"
                   id="budget"
                   name="budget"
                   pattern="^\d+\.{0,1}\d{0,2}$"
@@ -275,6 +277,7 @@ export default function Projects() {
               </div>
               <div className="flex justify-center">
                 <button
+                  data-test="create-project-button"
                   disabled={create.disabledButton}
                   className="mt-5 w-40 rounded-lg border-2 border-black bg-blue-500 p-2 font-bold hover:bg-blue-600">
                   {createLoading ? <LoadingSpinner /> : "Create Project"}
@@ -319,6 +322,7 @@ export default function Projects() {
                   Name:
                 </label>
                 <input
+                  data-test="update-project-name-input"
                   id="name"
                   name="name"
                   className="w-full p-2 text-black"
@@ -341,6 +345,7 @@ export default function Projects() {
                   Budget:
                 </label>
                 <input
+                  data-test="update-project-budget-input"
                   id="budget"
                   name="budget"
                   pattern="^\d+\.{0,1}\d{0,2}$"
@@ -357,6 +362,7 @@ export default function Projects() {
               </div>
               <div className="flex justify-center">
                 <button
+                  data-test="update-project-button"
                   disabled={update.disabledButton}
                   className="mt-5 w-40 rounded-lg border-2 border-black bg-blue-500 p-2 font-bold hover:bg-blue-600">
                   {updateLoading ? <LoadingSpinner /> : "Update Project"}
@@ -382,12 +388,14 @@ export default function Projects() {
             </div>
             <div className="flex gap-5">
               <button
+                data-test="delete-project-yes-button"
                 onClick={() => handleDelete()}
                 disabled={del.disabledButton}
                 className="mt-5 w-40 rounded-lg border-2 border-black bg-red-500 p-2 font-bold hover:bg-red-600">
                 {deleteLoading ? <LoadingSpinner /> : "Yes"}
               </button>
               <button
+                data-test="delete-project-no-button"
                 onClick={() =>
                   setDel({
                     ...del,
@@ -410,6 +418,7 @@ export default function Projects() {
             <div>Add A New Project</div>
             <div></div>
             <button
+              data-test="add-project-button"
               onClick={() =>
                 setCreate({ ...create, disabledIcon: true, modal: true })
               }
@@ -423,6 +432,7 @@ export default function Projects() {
               key={p.id}
               className="relative flex h-72 w-72 flex-col items-center justify-evenly border-2 border-solid border-black text-center text-4xl font-bold">
               <button
+                data-test={`update-project-icon-${p.id}`}
                 onClick={() =>
                   setUpdate({
                     ...update,
@@ -439,6 +449,7 @@ export default function Projects() {
                 <GrUpdate size={20} />
               </button>
               <button
+                data-test={`delete-project-icon-${p.id}`}
                 disabled={del.disabledIcon}
                 onClick={() =>
                   setDel({
