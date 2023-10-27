@@ -42,6 +42,36 @@ describe("Project Tests", () => {
     );
   });
 
+  it("Create Project - Budget Equal to 0", () => {
+    cy.loginGuest();
+    cy.getDataTest("add-project-button").click();
+    cy.contains("Create Project").should("be.visible");
+    cy.getDataTest("create-project-name-input").type(`test-${formattedDate}`);
+    cy.contains("Budget must be greater than $0").should("not.exist");
+    cy.getDataTest("create-project-button").click();
+    cy.contains("Budget must be greater than $0").should("be.visible");
+  });
+
+  it("Create Project - Non-Number Characters for Budget", () => {
+    // Create Project API Response
+    cy.intercept(
+      {
+        method: "POST",
+        url: Cypress.env("url").server + "/project"
+      },
+      cy.spy().as("create-response")
+    );
+
+    cy.loginGuest();
+    cy.getDataTest("add-project-button").click();
+    cy.contains("Create Project").should("be.visible");
+    cy.getDataTest("create-project-name-input").type(`test-${formattedDate}`);
+    cy.getDataTest("create-project-budget-input").clear().type("-0.01");
+    cy.getDataTest("create-project-button").click();
+    cy.get("@create-response").should("not.have.been.called");
+    cy.contains("Create Project").should("be.visible");
+  });
+
   it("User Project Workflow", () => {
     // Create Project API Response
     cy.intercept({
