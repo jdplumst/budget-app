@@ -46,6 +46,6 @@ describe("Login Tests", () => {
     cy.url().should("not.include", "/projects");
     cy.getDataTest("login-button").click();
     cy.contains(`Hi ${Cypress.env("guest").username}!`).should("be.visible");
-    cy.url().should("include", "/projects");
+    cy.url().should("eq", Cypress.config().baseUrl + "/projects");
   });
 });

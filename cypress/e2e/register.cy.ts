@@ -112,6 +112,6 @@ describe("Signup Tests", () => {
     cy.getDataTest("signup-password-input").type("$0Xxxxxx");
     cy.getDataTest("signup-button").click();
     cy.contains(`Hi test-${userDate}`).should("be.visible");
-    cy.url().should("include", "/projects");
+    cy.url().should("eq", Cypress.config().baseUrl + "/projects");
   });
 });
