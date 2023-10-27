@@ -5,6 +5,43 @@ describe("Project Tests", () => {
     (date.getUTCMonth() + 1).toString() +
     date.getUTCDate().toString();
 
+  it("Create Project - Empty Name and Budget", () => {
+    cy.loginGuest();
+    cy.getDataTest("add-project-button").click();
+    cy.contains("Create Project").should("be.visible");
+    cy.getDataTest("create-project-budget-input").clear();
+    cy.contains("Project Name must be non-empty").should("not.exist");
+    cy.getDataTest("create-project-button").click();
+    cy.contains("Project Name must be non-empty").should("be.visible");
+  });
+
+  it("Create Project - Empty Name", () => {
+    cy.loginGuest();
+    cy.getDataTest("add-project-button").click();
+    cy.contains("Create Project").should("be.visible");
+    cy.contains("Project Name must be non-empty").should("not.exist");
+    cy.getDataTest("create-project-button").click();
+    cy.contains("Project Name must be non-empty").should("be.visible");
+  });
+
+  it("Create Project - Name Longer than 30 Characters", () => {
+    cy.loginGuest();
+    cy.getDataTest("add-project-button").click();
+    cy.contains("Create Project").should("be.visible");
+    cy.contains("0/30").should("be.visible");
+    cy.getDataTest("create-project-name-input").type(
+      "0123456789012345678901234567890"
+    );
+    cy.contains("31/30").should("be.visible");
+    cy.contains("Project Name must be 30 characters or less").should(
+      "not.exist"
+    );
+    cy.getDataTest("create-project-button").click();
+    cy.contains("Project Name must be 30 characters or less").should(
+      "be.visible"
+    );
+  });
+
   it("User Project Workflow", () => {
     // Create Project API Response
     cy.intercept({
