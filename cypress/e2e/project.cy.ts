@@ -24,6 +24,17 @@ describe("Project Tests", () => {
     cy.contains("Project Name must be non-empty").should("be.visible");
   });
 
+  it.only("Create Project - Empty Budget", () => {
+    cy.loginGuest();
+    cy.getDataTest("add-project-button").click();
+    cy.contains("Create Project").should("be.visible");
+    cy.getDataTest("create-project-name-input").type(`test-${formattedDate}`);
+    cy.getDataTest("create-project-budget-input").clear;
+    cy.contains("Budget must be greater than $0").should("not.exist");
+    cy.getDataTest("create-project-button").click();
+    cy.contains("Budget must be greater than $0").should("be.visible");
+  });
+
   it("Create Project - Name Longer than 30 Characters", () => {
     cy.loginGuest();
     cy.getDataTest("add-project-button").click();
