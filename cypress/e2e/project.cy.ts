@@ -189,6 +189,17 @@ describe("Project Tests", () => {
     cy.contains("My First Project-updated").should("not.exist");
   });
 
+  it("Delete Project - Cancel Delete", () => {
+    cy.loginGuest();
+    cy.getDataTest("delete-project-icon-12").click();
+    cy.contains("Delete Project: My First Project").should("be.visible");
+    cy.getDataTest("delete-project-no-button").click();
+    cy.contains("My First Project").should("be.visible");
+    cy.reload();
+    cy.contains("My First Project").should("be.visible");
+    cy.getDataTest("project-12").should("be.visible");
+  });
+
   it("User Project Workflow", () => {
     // Create Project API Response
     cy.intercept({
@@ -237,7 +248,9 @@ describe("Project Tests", () => {
 
       // Delete Project
       cy.getDataTest(`delete-project-icon-${createResponse.id}`).click();
+      cy.contains(`Delete Project: test-${formattedDate}`).should("be.visible");
       cy.getDataTest("delete-project-yes-button").click();
+      cy.contains(`Delete Project: test-${formattedDate}`).should("not.exist");
       cy.getDataTest(`project-${createResponse.id}`).should("not.exist");
     });
   });
