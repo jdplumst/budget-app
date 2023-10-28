@@ -169,11 +169,24 @@ describe("Project Tests", () => {
     cy.getDataTest("update-project-icon-12").click();
     cy.contains("Update Project: My First Project").should("be.visible");
     cy.contains("16/30").should("be.visible");
-    cy.getDataTest("update-project-name-input").type(`test-${formattedDate}`);
+    cy.getDataTest("update-project-name-input").type("-updated");
     cy.getDataTest("update-project-budget-input").clear().type("-0.01");
     cy.getDataTest("update-project-button").click();
     cy.get("@update-response").should("not.have.been.called");
     cy.contains("Update Project: My First Project").should("be.visible");
+  });
+
+  it("Update Project - Close Modal", () => {
+    cy.loginGuest();
+    cy.getDataTest("update-project-icon-12").click();
+    cy.contains("Update Project: My First Project").should("be.visible");
+    cy.contains("16/30").should("be.visible");
+    cy.getDataTest("update-project-name-input").type("-updated");
+    cy.getDataTest("update-project-budget-input").clear().type("215.22");
+    cy.getDataTest("update-project-close-button").click();
+    cy.contains("My First Project-updated").should("not.exist");
+    cy.reload();
+    cy.contains("My First Project-updated").should("not.exist");
   });
 
   it("User Project Workflow", () => {

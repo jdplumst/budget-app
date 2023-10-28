@@ -297,6 +297,7 @@ export default function Projects() {
         {update.modal && (
           <Modal>
             <button
+              data-test="update-project-close-button"
               onClick={() =>
                 setUpdate({
                   ...update,
