@@ -43,6 +43,16 @@ declare namespace Cypress {
     loginPremium(): Chainable<void>;
     onProjectsPage(username: string): Chainable<void>;
     onHomePage(): Chainable<void>;
+    expenseIsVisible(
+      name: string,
+      amount: string,
+      type: string
+    ): Chainable<void>;
+    expenseNotExist(
+      name: string,
+      amount: string,
+      type: string
+    ): Chainable<void>;
   }
 }
 
@@ -72,4 +82,16 @@ Cypress.Commands.add("onHomePage", () => {
   cy.url().should("eq", Cypress.config().baseUrl + "/");
   cy.contains("Budget App").should("be.visible");
   cy.contains("Log In").should("be.visible");
+});
+
+Cypress.Commands.add("expenseIsVisible", (name, amount, type) => {
+  cy.contains(`Name: ${name}`).should("be.visible");
+  cy.contains(`Amount: $${amount}`).should("be.visible");
+  cy.contains(`Type: ${type}`).should("be.visible");
+});
+
+Cypress.Commands.add("expenseNotExist", (name, amount, type) => {
+  cy.contains(`Name: ${name}`).should("not.exist");
+  cy.contains(`Amount: $${amount}`).should("not.exist");
+  cy.contains(`Type: ${type}`).should("not.exist");
 });

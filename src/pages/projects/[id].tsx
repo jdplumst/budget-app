@@ -295,6 +295,7 @@ export default function Project() {
                     Name:
                   </label>
                   <input
+                    data-test="create-expense-name-input"
                     id="name"
                     name="name"
                     className="w-full p-2 text-black"
@@ -317,6 +318,7 @@ export default function Project() {
                     Amount:
                   </label>
                   <input
+                    data-test="create-expense-amount-input"
                     id="amount"
                     name="amount"
                     pattern="^\d+\.{0,1}\d{0,2}$"
@@ -336,6 +338,7 @@ export default function Project() {
                     Type:
                   </label>
                   <select
+                    data-test="create-expense-type-input"
                     name="type"
                     id="type"
                     onChange={(e) =>
@@ -354,6 +357,7 @@ export default function Project() {
                 </div>
                 <div className="flex justify-center">
                   <button
+                    data-test="create-expense-button"
                     disabled={create.disabledButton}
                     className="mt-5 w-40 rounded-lg border-2 border-black bg-blue-500 p-2 font-bold hover:bg-blue-600">
                     {createLoading ? <LoadingSpinner /> : "Create Expense"}
@@ -399,6 +403,7 @@ export default function Project() {
                     Name:
                   </label>
                   <input
+                    data-test="update-expense-name-input"
                     id="name"
                     name="name"
                     className="w-full p-2 text-black"
@@ -421,6 +426,7 @@ export default function Project() {
                     Amount:
                   </label>
                   <input
+                    data-test="update-expense-amount-input"
                     id="amount"
                     name="amount"
                     pattern="^\d+\.{0,1}\d{0,2}$"
@@ -440,6 +446,7 @@ export default function Project() {
                     Type:
                   </label>
                   <select
+                    data-test="update-expense-type-input"
                     name="type"
                     id="type"
                     onChange={(e) =>
@@ -458,6 +465,7 @@ export default function Project() {
                 </div>
                 <div className="flex justify-center">
                   <button
+                    data-test="update-expense-button"
                     disabled={update.disabledButton}
                     className="mt-5 w-40 rounded-lg border-2 border-black bg-blue-500 p-2 font-bold hover:bg-blue-600">
                     {updateLoading ? <LoadingSpinner /> : "Update Expense"}
@@ -483,12 +491,14 @@ export default function Project() {
               </div>
               <div className="flex gap-5">
                 <button
+                  data-test="delete-expense-yes-button"
                   onClick={() => handleDelete()}
                   disabled={del.disabledButton}
                   className="mt-5 w-40 rounded-lg border-2 border-black bg-red-500 p-2 font-bold hover:bg-red-600">
                   {deleteLoading ? <LoadingSpinner /> : "Yes"}
                 </button>
                 <button
+                  data-test="delete-expense-no-button"
                   onClick={() =>
                     setDel({
                       ...del,
@@ -523,6 +533,7 @@ export default function Project() {
             </div>
             <h3 className="pb-4 text-3xl font-bold">Expenses</h3>
             <button
+              data-test="add-expense-button"
               disabled={create.disabledIcon}
               onClick={() => {
                 setCreate({ ...create, disabledIcon: true, modal: true });
@@ -553,6 +564,7 @@ export default function Project() {
                   </div>
                   <div className="flex flex-col gap-5">
                     <button
+                      data-test={`update-expense-button-${e.id}`}
                       disabled={update.disabledIcon}
                       onClick={() => {
                         setUpdate({
@@ -571,6 +583,7 @@ export default function Project() {
                       Update
                     </button>
                     <button
+                      data-test={`delete-expense-button-${e.id}`}
                       disabled={del.disabledIcon}
                       onClick={() => {
                         setDel({
