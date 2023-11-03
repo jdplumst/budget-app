@@ -1,4 +1,21 @@
 describe("Expense Tests", () => {
+  beforeEach(() => {
+    cy.loginGuest();
+    cy.getDataTest("project-12").click();
+    cy.contains("You have spent $325.80 out of your $500 budget").should(
+      "be.visible"
+    );
+  });
+
+  it("Create Expense - Empty Name and Amount", () => {
+    cy.contains("Create Expense").should("not.exist");
+    cy.getDataTest("add-expense-button").click();
+    cy.contains("Create Expense").should("be.visible");
+    cy.contains("Expense Name must be non-empty").should("not.exist");
+    cy.getDataTest("create-expense-button").click();
+    cy.contains("Expense Name must be non-empty").should("be.visible");
+  });
+
   it("User Expense Workflow", () => {
     // Create Expense API Response
     cy.intercept({
@@ -7,11 +24,6 @@ describe("Expense Tests", () => {
     }).as("create-response");
 
     // Create Expense
-    cy.loginGuest();
-    cy.getDataTest("project-12").click();
-    cy.contains("You have spent $325.80 out of your $500 budget").should(
-      "be.visible"
-    );
     cy.contains("Create Expense").should("not.exist");
     cy.getDataTest("add-expense-button").click();
     cy.contains("Create Expense").should("be.visible");
