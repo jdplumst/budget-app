@@ -36,6 +36,22 @@ describe("Expense Tests", () => {
     cy.contains("Amount must be greater than $0").should("be.visible");
   });
 
+  it("Create Expense - Name Longer Than 30 Characters", () => {
+    cy.contains("Create Expense").should("not.exist");
+    cy.getDataTest("add-expense-button").click();
+    cy.contains("Create Expense").should("be.visible");
+    cy.getDataTest("create-expense-name-input").type(
+      "0123456789012345678901234567890"
+    );
+    cy.contains("Expense Name must be 30 characters or less").should(
+      "not.exist"
+    );
+    cy.getDataTest("create-expense-button").click();
+    cy.contains("Expense Name must be 30 characters or less").should(
+      "be.visible"
+    );
+  });
+
   it("User Expense Workflow", () => {
     // Create Expense API Response
     cy.intercept({
