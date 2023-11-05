@@ -16,7 +16,7 @@ describe("Expense Tests", () => {
     cy.contains("Expense Name must be non-empty").should("be.visible");
   });
 
-  it("Create Expense - Empty Name ", () => {
+  it("Create Expense - Empty Name", () => {
     cy.contains("Create Expense").should("not.exist");
     cy.getDataTest("add-expense-button").click();
     cy.contains("Create Expense").should("be.visible");
@@ -26,7 +26,7 @@ describe("Expense Tests", () => {
     cy.contains("Expense Name must be non-empty").should("be.visible");
   });
 
-  it("Create Expense - Empty Amount ", () => {
+  it("Create Expense - Empty Amount", () => {
     cy.contains("Create Expense").should("not.exist");
     cy.getDataTest("add-expense-button").click();
     cy.contains("Create Expense").should("be.visible");
@@ -50,6 +50,17 @@ describe("Expense Tests", () => {
     cy.contains("Expense Name must be 30 characters or less").should(
       "be.visible"
     );
+  });
+
+  it("Create Expense - Amount Equal to 0", () => {
+    cy.contains("Create Expense").should("not.exist");
+    cy.getDataTest("add-expense-button").click();
+    cy.contains("Create Expense").should("be.visible");
+    cy.getDataTest("create-expense-name-input").type("x");
+    cy.getDataTest("create-expense-amount-input").type("0");
+    cy.contains("Amount must be greater than $0").should("not.exist");
+    cy.getDataTest("create-expense-button").click();
+    cy.contains("Amount must be greater than $0").should("be.visible");
   });
 
   it("User Expense Workflow", () => {
