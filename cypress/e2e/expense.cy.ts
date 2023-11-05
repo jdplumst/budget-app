@@ -26,6 +26,16 @@ describe("Expense Tests", () => {
     cy.contains("Expense Name must be non-empty").should("be.visible");
   });
 
+  it("Create Expense - Empty Amount ", () => {
+    cy.contains("Create Expense").should("not.exist");
+    cy.getDataTest("add-expense-button").click();
+    cy.contains("Create Expense").should("be.visible");
+    cy.getDataTest("create-expense-name-input").type("x");
+    cy.contains("Amount must be greater than $0").should("not.exist");
+    cy.getDataTest("create-expense-button").click();
+    cy.contains("Amount must be greater than $0").should("be.visible");
+  });
+
   it("User Expense Workflow", () => {
     // Create Expense API Response
     cy.intercept({
