@@ -63,6 +63,26 @@ describe("Expense Tests", () => {
     cy.contains("Amount must be greater than $0").should("be.visible");
   });
 
+  it("Create Expense - Non-Number Characters for Amount", () => {
+    // Create Expense API Response
+    cy.intercept(
+      {
+        method: "POST",
+        url: Cypress.env("url").server + "/expense"
+      },
+      cy.spy().as("create-response")
+    );
+
+    cy.contains("Create Expense").should("not.exist");
+    cy.getDataTest("add-expense-button").click();
+    cy.contains("Create Expense").should("be.visible");
+    cy.getDataTest("create-expense-name-input").type("x");
+    cy.getDataTest("create-expense-amount-input").type("-0.01");
+    cy.getDataTest("create-expense-button").click();
+    cy.get("@create-response").should("not.have.been.called");
+    cy.contains("Create Expense").should("be.visible");
+  });
+
   it("User Expense Workflow", () => {
     // Create Expense API Response
     cy.intercept({
