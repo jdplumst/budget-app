@@ -83,6 +83,24 @@ describe("Expense Tests", () => {
     cy.contains("Create Expense").should("be.visible");
   });
 
+  it("Create Expense - Close Modal", () => {
+    cy.contains("Create Expense").should("not.exist");
+    cy.getDataTest("add-expense-button").click();
+    cy.contains("Create Expense").should("be.visible");
+    cy.getDataTest("create-expense-name-input").type("Close Expense");
+    cy.getDataTest("create-expense-amount-input").type("10");
+    cy.getDataTest("create-expense-close-button").click();
+    cy.contains("Close Expense").should("not.exist");
+    cy.contains("You have spent $325.80 out of your $500 budget").should(
+      "be.visible"
+    );
+    cy.reload();
+    cy.contains("Close Expense").should("not.exist");
+    cy.contains("You have spent $325.80 out of your $500 budget").should(
+      "be.visible"
+    );
+  });
+
   it("User Expense Workflow", () => {
     // Create Expense API Response
     cy.intercept({

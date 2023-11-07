@@ -269,6 +269,7 @@ export default function Project() {
           {create.modal && (
             <Modal>
               <button
+                data-test="create-expense-close-button"
                 onClick={() =>
                   setCreate({
                     ...create,
