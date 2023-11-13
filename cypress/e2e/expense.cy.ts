@@ -90,12 +90,31 @@ describe("Expense Tests", () => {
     cy.getDataTest("create-expense-name-input").type("Close Expense");
     cy.getDataTest("create-expense-amount-input").type("10");
     cy.getDataTest("create-expense-close-button").click();
-    cy.contains("Close Expense").should("not.exist");
+    cy.contains("Create Expense").should("not.exist");
     cy.contains("You have spent $325.80 out of your $500 budget").should(
       "be.visible"
     );
     cy.reload();
-    cy.contains("Close Expense").should("not.exist");
+    cy.contains("Create Expense").should("not.exist");
+    cy.contains("You have spent $325.80 out of your $500 budget").should(
+      "be.visible"
+    );
+  });
+
+  it("Update Expense - Close Modal", () => {
+    cy.contains("Update Expense: Healthcare Expense").should("not.exist");
+    cy.getDataTest("update-expense-button-19").click();
+    cy.contains("Update Expense: Healthcare Expense").should("be.visible");
+    cy.getDataTest("update-expense-name-input").clear().type("Food Expense");
+    cy.getDataTest("update-expense-amount-input").clear().type("115.88");
+    cy.getDataTest("update-expense-type-input").select("Food");
+    cy.getDataTest("update-expense-close-button").click();
+    cy.contains("Update Expense: Healthcare Expense").should("not.exist");
+    cy.contains("You have spent $325.80 out of your $500 budget").should(
+      "be.visible"
+    );
+    cy.reload();
+    cy.contains("Update Expense: Healthcare Expense").should("not.exist");
     cy.contains("You have spent $325.80 out of your $500 budget").should(
       "be.visible"
     );
